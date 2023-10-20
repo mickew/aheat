@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>AHeat.Application</RootNamespace>
+    <AssemblyName>AHeat.Application</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AHeat.Domain\AHeat.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

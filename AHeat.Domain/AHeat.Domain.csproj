@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>AHeat.Domain</RootNamespace>
+    <AssemblyName>AHeat.Domain</AssemblyName>
+  </PropertyGroup>
+
+</Project>
