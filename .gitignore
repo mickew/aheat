@@ -5,6 +5,11 @@
 
 # sqlite
 *.db
+*.db-shm
+*.db-wal
+
+# zip files
+*.zip
 
 # User-specific files
 *.rsuser
