@@ -9,8 +9,6 @@ public enum Permissions
     ViewUsers = 4,
     ManageUsers = 8,
     ConfigureAccessControl = 16,
-    Counter = 32,
-    Forecast = 64,
-    ViewAccessControl = 128,
+    ViewAccessControl = 32,
     All = ~None
 }

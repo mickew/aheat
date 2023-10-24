@@ -12,7 +12,7 @@ namespace AHeat.Web.API;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -45,10 +45,16 @@ public class Program
         builder.Services.AddControllersWithViews();
         builder.Services.AddRazorPages();
 
+        builder.Services.AddOpenApiDocument(configure =>
+        {
+            configure.Title = "AHeatWeb";
+        });
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        //builder.Services.AddEndpointsApiExplorer();
+        //builder.Services.AddSwaggerGen();
+
+        builder.Services.AddScoped<DbInitializer>();
 
         builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
         builder.Services.AddSingleton<IAuthorizationPolicyProvider, FlexibleAuthorizationPolicyProvider>();
@@ -58,8 +64,22 @@ public class Program
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
-            app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseMigrationsEndPoint();
+            app.UseWebAssemblyDebugging();
+            //app.UseSwagger();
+            //app.UseSwaggerUI();
+
+            using var scope = app.Services.CreateScope();
+
+            var services = scope.ServiceProvider;
+
+            var initializer = services.GetRequiredService<DbInitializer>();
+
+            await initializer.RunAsync();
+
+
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
         }
         else
         {
