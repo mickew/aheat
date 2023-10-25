@@ -1,0 +1,17 @@
+﻿@page "/admin/users"
+
+<PageTitle>Users</PageTitle>
+
+<MudDataGrid Items="@Users.Take(4)">
+    <Columns>
+        <PropertyColumn Property="x => x.UserName" Title="UserName" />
+        <PropertyColumn Property="x => x.Email" />
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudStack Row>
+                    <MudButton @onclick="() => EditUser(context.Item.Id)" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Edit</MudButton>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
