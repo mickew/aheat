@@ -95,8 +95,6 @@ public class Program
 
         app.UseRouting();
 
-        app.UseAuthorization();
-
         app.UseIdentityServer();
         app.UseAuthentication();
         app.UseAuthorization();

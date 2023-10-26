@@ -1,4 +1,6 @@
 ﻿@page "/admin/users"
+@attribute [Authorize(Permissions.ViewUsers | Permissions.ManageUsers)]
+
 
 <PageTitle>Users</PageTitle>
 
