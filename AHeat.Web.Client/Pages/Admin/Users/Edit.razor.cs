@@ -1,4 +1,5 @@
-﻿using AHeat.Web.Client.Services;
+﻿using System.Data;
+using AHeat.Web.Client.Services;
 using AHeat.Web.Shared;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -17,11 +18,14 @@ public partial class Edit
     public IRolesClient RolesClient { get; set; } = null!;
 
     [Inject]
+    public ISnackbar Snackbar { get; set; } = null!;
+
+    [Inject]
     public NavigationManager Navigation { get; set; } = null!;
 
-    public bool success;
-    public string[] errors = { };
     public MudForm? form;
+
+    public UserDtoFluentValidator UserDtoValidator = new UserDtoFluentValidator();
 
     public UserDto User { get; set; } = new();
 
@@ -50,8 +54,13 @@ public partial class Edit
 
     public async Task UpdateUser()
     {
-        await UsersClient.PutUserAsync(User.Id, User);
+        await form!.Validate();
+        if (form!.IsValid)
+        {
+            await UsersClient.PutUserAsync(User.Id, User);
+            Snackbar.Add($"Role {User.UserName} updated", Severity.Success);
 
-        Navigation.NavigateTo("/admin/users");
+            Navigation.NavigateTo("/admin/users");
+        }
     }
 }

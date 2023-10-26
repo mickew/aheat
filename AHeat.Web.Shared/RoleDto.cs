@@ -1,4 +1,5 @@
 ﻿using AHeat.Web.Shared.Authorization;
+using FluentValidation;
 
 namespace AHeat.Web.Shared;
 public class RoleDto
@@ -48,5 +49,21 @@ public class RoleDto
     public void Revoke(Permissions permission)
     {
         Permissions ^= permission;
+    }
+
+    public class RoleDtoFluentValidator : AbstractValidator<RoleDto>
+    {
+        public RoleDtoFluentValidator()
+        {
+            RuleFor(x => x.Name)
+                .NotEmpty().Length(50);
+        }
+        public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+        {
+            var result = await ValidateAsync(ValidationContext<RoleDto>.CreateWithOptions((RoleDto)model, x => x.IncludeProperties(propertyName)));
+            if (result.IsValid)
+                return Array.Empty<string>();
+            return result.Errors.Select(e => e.ErrorMessage);
+        };
     }
 }

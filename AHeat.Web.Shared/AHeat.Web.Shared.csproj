@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.8.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.12" />
   </ItemGroup>
 
