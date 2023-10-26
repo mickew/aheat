@@ -20,7 +20,7 @@ public class UsersController : ControllerBase
 
     // GET: api/Admin/Users
     [HttpGet]
-    [Authorize(Permissions.ViewUsers | Permissions.ManageUsers)]
+    //[Authorize(Permissions.ViewUsers | Permissions.ManageUsers)]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
     {
         return await _userManager.Users
@@ -31,7 +31,7 @@ public class UsersController : ControllerBase
 
     // GET: api/Admin/Users/5
     [HttpGet("{id}")]
-    [Authorize(Permissions.ViewUsers)]
+    //[Authorize(Permissions.ViewUsers)]
     public async Task<ActionResult<UserDto>> GetUser(string id)
     {
         var user = await _userManager.FindByIdAsync(id);

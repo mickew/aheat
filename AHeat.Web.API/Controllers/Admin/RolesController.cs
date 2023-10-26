@@ -20,7 +20,7 @@ public class RolesController : ControllerBase
 
     // GET: api/Admin/Roles
     [HttpGet]
-    [Authorize(Permissions.ViewRoles)]
+    //[Authorize(Permissions.ViewRoles)]
     public async Task<ActionResult<IEnumerable<RoleDto>>> GetRoles()
     {
         var roles = await _roleManager.Roles
