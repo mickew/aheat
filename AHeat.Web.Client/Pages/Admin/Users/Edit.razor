@@ -1,0 +1,52 @@
+﻿@page "/admin/users/{userId}"
+@using System.ComponentModel.DataAnnotations
+@attribute [Authorize(Permissions.ManageUsers)]
+
+<PageTitle>Edit User</PageTitle>
+<div>
+    <MudChip Label="true" Color="Color.Info" Icon="@Icons.Material.Filled.Person">User</MudChip>
+</div>
+<MudForm Model="@User" @ref="@form" Validation="@UserDtoValidator.ValidateValue" ValidationDelay="0">
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="User name"
+                    @bind-Value="User.UserName" For="@(() => User.UserName)" />
+                    <MudTextField Label="Email" Class="mt-3"
+                    @bind-Value="User.Email" For="@(() => User.Email)" />
+
+@*                     <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
+                    @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
+                    <MudTextField Label="Password" HelperText="Repeat the password" Class="mt-3"
+                    @bind-Value="model.Password2" For="@(() => model.Password2)" InputType="InputType.Password" />
+ *@
+                </MudCardContent>
+                <MudCardContent>
+                    <MudSimpleTable Style="overflow-x: auto;">
+                        <thead>
+                            <tr>
+                                <th>Roles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var role in Roles)
+                            {
+                                <tr>
+                                    <div class="d-flex align-center justify-space-between">
+                                        <MudCheckBox T="bool" Label="@role.Name" checked="@User.Roles.Contains(role.Name)" CheckedChanged="((e) => ToggleSelectedRole(role.Name))" />
+                                    </div>
+                                </tr>
+                            }
+                        </tbody>
+                    </MudSimpleTable>
+
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton StartIcon="@Icons.Material.Filled.Save" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await UpdateUser())">Save</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+ </MudForm>
+<MudLink href="/admin/users">Back to List</MudLink>

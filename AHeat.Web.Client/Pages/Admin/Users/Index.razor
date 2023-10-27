@@ -1,0 +1,33 @@
+﻿@page "/admin/users"
+@attribute [Authorize(Permissions.ViewUsers | Permissions.ManageUsers)]
+
+
+<PageTitle>Users</PageTitle>
+<div>
+    <MudChip Label="true" Color="Color.Info" Icon="@Icons.Material.Filled.People">Users</MudChip>
+</div>
+<FlexibleAuthorizeView Permissions="@Permissions.ManageUsers">
+    <Authorized>
+        @{
+            UserGotNoRights = false;
+        }
+    </Authorized>
+    <NotAuthorized>
+        @{
+            UserGotNoRights = true;
+        }
+    </NotAuthorized>
+</FlexibleAuthorizeView>
+<MudDataGrid Items="@Users">
+    <Columns>
+        <PropertyColumn Property="x => x.UserName" Title="UserName" />
+        <PropertyColumn Property="x => x.Email" />
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudStack Row>
+                    <MudButton Disabled=@UserGotNoRights StartIcon="@Icons.Material.Filled.Edit" @onclick="() => EditUser(context.Item.Id)" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Edit</MudButton>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>

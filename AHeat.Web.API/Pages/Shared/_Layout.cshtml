@@ -1,0 +1,53 @@
+﻿@using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Mvc.ViewEngines
+@inject IWebHostEnvironment Environment
+@inject ICompositeViewEngine Engine
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AHeat.Web.API</title>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/loginstyle.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/css/loginstyle.css" asp-append-version="true" />
+    </environment>
+</head>
+<body>
+        <partial name="_CookieConsentPartial" optional />
+        <main role="main" class="pb-1">
+            @RenderBody()
+        </main>
+@*     <footer class="footer border-top pl-3 text-muted">
+        <div class="container">
+        &copy; 2023 - AHeat.Web.API
+            @{
+                var foundPrivacy = Url.Page("/Privacy", new { area = "" });
+            }
+            @if (foundPrivacy != null)
+            {
+                <a asp-area="" asp-page="/Privacy">Privacy</a>
+            }
+        </div>
+    </footer>
+ *@
+    <environment include="Development">
+        <script src="~/Identity/lib/jquery/dist/jquery.js"></script>
+        <script src="~/Identity/js/site.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+                asp-fallback-src="~/Identity/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2">
+        </script>
+        <script src="~/Identity/js/site.js" asp-append-version="true"></script>
+    </environment>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
