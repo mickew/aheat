@@ -3,7 +3,9 @@
 
 
 <PageTitle>Users</PageTitle>
-
+<div>
+    <MudChip Label="true" Color="Color.Info" Icon="@Icons.Material.Filled.People">Users</MudChip>
+</div>
 <MudDataGrid Items="@Users">
     <Columns>
         <PropertyColumn Property="x => x.UserName" Title="UserName" />

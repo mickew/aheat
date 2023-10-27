@@ -2,10 +2,12 @@
 @attribute [Authorize(Permissions.ViewUsers | Permissions.ManageUsers)]
 
 <PageTitle>Roles</PageTitle>
-
+<div>
+    <MudChip Label="true" Color="Color.Info" Icon="@Icons.Material.Filled.FeaturedPlayList">Roles</MudChip>
+</div>
 <MudDataGrid Items="@Roles">
     <Columns>
-        <PropertyColumn Property="x => x.Name" Title="Role" />
+        <PropertyColumn Property="x => x.Name" Title="Name" />
         <TemplateColumn CellClass="d-flex justify-end">
             <CellTemplate>
                 <MudStack Row>

@@ -1,9 +1,15 @@
 ﻿<MudNavMenu>
-    <MudNavLink Href="/" Match="NavLinkMatch.All">Dashboard</MudNavLink>
-    <MudNavLink Href="/servers" Match="NavLinkMatch.Prefix">Servers</MudNavLink>
-    <MudNavGroup Title="Settings" Expanded="true">
-        <MudNavLink Href="/admin/users" Match="NavLinkMatch.Prefix">Users</MudNavLink>
-        <MudNavLink Href="/admin/roles" Match="NavLinkMatch.Prefix">Roles</MudNavLink>
+    <MudNavLink Href="/" Icon="@Icons.Material.Filled.Dashboard" Match="NavLinkMatch.All">Dashboard</MudNavLink>
+    <MudNavGroup Icon="@Icons.Material.Filled.AdminPanelSettings" Title="Settings" Expanded="true">
+        <FlexibleAuthorizeView Permissions="@(Permissions.ViewUsers | Permissions.ManageUsers)">
+            <MudNavLink Icon="@Icons.Material.Filled.People" Href="/admin/users" Match="NavLinkMatch.Prefix">Users</MudNavLink>
+        </FlexibleAuthorizeView>
+        <FlexibleAuthorizeView Permissions="@(Permissions.ViewRoles | Permissions.ManageRoles)">
+            <MudNavLink Icon="@Icons.Material.Filled.FeaturedPlayList" Href="/admin/roles" Match="NavLinkMatch.Prefix">Roles</MudNavLink>
+        </FlexibleAuthorizeView>
+        <FlexibleAuthorizeView Permissions="@(Permissions.ViewAccessControl | Permissions.ConfigureAccessControl)">
+            <MudNavLink Icon="@Icons.Material.Filled.Lock" Href="admin/access-control" Match="NavLinkMatch.Prefix">Access Control</MudNavLink>
+        </FlexibleAuthorizeView>
     </MudNavGroup>
-    <MudNavLink Href="/about" Match="NavLinkMatch.Prefix">About</MudNavLink>
+    <MudNavLink Icon="@Icons.Material.Filled.QuestionMark" Href="/about" Match="NavLinkMatch.Prefix">About</MudNavLink>
 </MudNavMenu>

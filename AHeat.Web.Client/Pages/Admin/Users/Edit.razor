@@ -2,8 +2,10 @@
 @using System.ComponentModel.DataAnnotations
 
 <PageTitle>Edit User</PageTitle>
-
-<MudForm Model="@User" @ref="@form" Validation="@UserDtoValidator.ValidateValue" ValidationDelay="0" >
+<div>
+    <MudChip Label="true" Color="Color.Info" Icon="@Icons.Material.Filled.Person">User</MudChip>
+</div>
+<MudForm Model="@User" @ref="@form" Validation="@UserDtoValidator.ValidateValue" ValidationDelay="0">
     <MudGrid>
         <MudItem xs="12" sm="7">
             <MudCard>

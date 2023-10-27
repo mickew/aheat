@@ -13,13 +13,13 @@
         <LoginDisplay />
     </MudAppBar>
     <MudDrawer @bind-Open="@_drawerOpen">
-        <MudDrawerHeader>
+        <MudDrawerHeader Color="Color.Primary">
             <MudText Typo="Typo.h6">MudBlazor.Template</MudText>
         </MudDrawerHeader>
         <NavMenu />
     </MudDrawer>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Medium">
+        <MudContainer Class="mt-6" MaxWidth="MaxWidth.Medium">
             @Body
         </MudContainer>
     </MudMainContent>
