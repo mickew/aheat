@@ -18,6 +18,8 @@ public partial class Index
     [Inject]
     public ISnackbar Snackbar { get; set; } = null!;
 
+    protected bool UserGotNoRights { get; set; } = true;
+
     public ICollection<RoleDto> Roles { get; set; } = new List<RoleDto>();
 
     protected override async Task OnInitializedAsync()

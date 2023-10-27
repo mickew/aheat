@@ -10,6 +10,8 @@ public partial class Index
 
     [Inject] public NavigationManager? Navigation { get; set; }
 
+    protected bool UserGotNoRights { get; set; } = true;
+
     public ICollection<UserDto> Users { get; set; } = new List<UserDto>();
 
     protected override async Task OnInitializedAsync()

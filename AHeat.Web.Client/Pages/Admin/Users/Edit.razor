@@ -1,5 +1,6 @@
 ﻿@page "/admin/users/{userId}"
 @using System.ComponentModel.DataAnnotations
+@attribute [Authorize(Permissions.ManageUsers)]
 
 <PageTitle>Edit User</PageTitle>
 <div>
