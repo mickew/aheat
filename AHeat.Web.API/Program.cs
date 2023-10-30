@@ -8,13 +8,18 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using AHeat.Application.Interfaces;
+using AHeat.Application.Services;
 
 namespace AHeat.Web.API;
 
 public class Program
 {
+    private const string SeedArgs = "/seed";
+
     public static async Task Main(string[] args)
     {
+        var applyDbMigrationWithDataSeedFromProgramArguments = args.Any(x => x == SeedArgs);
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
@@ -69,15 +74,16 @@ public class Program
             app.UseWebAssemblyDebugging();
             //app.UseSwagger();
             //app.UseSwaggerUI();
+            if (applyDbMigrationWithDataSeedFromProgramArguments)
+            {
+                using var scope = app.Services.CreateScope();
 
-            using var scope = app.Services.CreateScope();
+                var services = scope.ServiceProvider;
 
-            var services = scope.ServiceProvider;
+                var initializer = services.GetRequiredService<DbInitializer>();
 
-            var initializer = services.GetRequiredService<DbInitializer>();
-
-            await initializer.RunAsync();
-
+                await initializer.RunAsync();
+            }
 
             app.UseOpenApi();
             app.UseSwaggerUi3();
