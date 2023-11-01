@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using AHeat.Application.Interfaces;
 using AHeat.Application.Services;
+using AHeat.Web.Shared.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AHeat.Web.API;
 
@@ -64,6 +66,25 @@ public class Program
 
         builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
         builder.Services.AddSingleton<IAuthorizationPolicyProvider, FlexibleAuthorizationPolicyProvider>();
+
+        builder.Services.AddScoped<IDiscoverService, DiscoverShelly2Service>();
+
+        builder.Services.AddScoped<Shelly2DeviceService>();
+
+        builder.Services.AddScoped<StrategyDeviceService>(provider => (deviceType) =>
+        {
+            switch (deviceType)
+            {
+                case DeviceTypes.Generic:
+                    throw new NotImplementedException();
+                case DeviceTypes.ShellyGen1:
+                    throw new NotImplementedException();
+                case DeviceTypes.ShellyGen2:
+                    return provider.GetRequiredService<Shelly2DeviceService>();
+                default:
+                    throw new NotImplementedException();
+            }
+        });
 
         var app = builder.Build();
 

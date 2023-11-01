@@ -10,5 +10,7 @@ public enum Permissions
     ManageUsers = 8,
     ConfigureAccessControl = 16,
     ViewAccessControl = 32,
+    ConfigurePowerDevices = 64,
+    ViewPowerDevices = 128,
     All = ~None
 }

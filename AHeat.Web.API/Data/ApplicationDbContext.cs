@@ -14,6 +14,8 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<User, Role>
     {
     }
 
+    public DbSet<PowerDevice> PowerDevices { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

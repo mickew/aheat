@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AHeat.Application\AHeat.Application.csproj" />
     <ProjectReference Include="..\AHeat.Web.Client\AHeat.Web.Client.csproj" />
     <ProjectReference Include="..\AHeat.Web.Shared\AHeat.Web.Shared.csproj" />
   </ItemGroup>
@@ -32,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="NewFolder\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
