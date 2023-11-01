@@ -159,7 +159,7 @@ public class PowerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<DeviceChannelState>> PutPowerDeviceSwitch(int id)
+    public async Task<ActionResult<DeviceChannelState>> GetPowerDeviceSwitch(int id)
     {
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
         if (powerDevice == null)
@@ -240,7 +240,7 @@ public class PowerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> PostPowerDeviceOffWebHooks(int id, WebHookInfo webHookInfo)
+    public async Task<IActionResult> PostPowerDeviceOffWebHook(int id, WebHookInfo webHookInfo)
     {
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
         if (powerDevice == null)
@@ -267,7 +267,7 @@ public class PowerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> PostPowerDeviceOnWebHooks(int id, WebHookInfo webHookInfo)
+    public async Task<IActionResult> PostPowerDeviceOnWebHook(int id, WebHookInfo webHookInfo)
     {
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
         if (powerDevice == null)
@@ -294,7 +294,7 @@ public class PowerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> PutPowerDeviceWebHooks(int id, WebHookInfo webHookInfo)
+    public async Task<IActionResult> PutPowerDeviceWebHook(int id, WebHookInfo webHookInfo)
     {
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
         if (powerDevice == null)
@@ -321,7 +321,7 @@ public class PowerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeletePowerDeviceWebHooks(int id, int hookid)
+    public async Task<IActionResult> DeletePowerDeviceWebHook(int id, int hookid)
     {
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
         if (powerDevice == null)
