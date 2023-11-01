@@ -404,3 +404,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/AHeat.Web.API/Properties/launchSettings.json.backup

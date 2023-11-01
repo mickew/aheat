@@ -3,6 +3,7 @@ using AHeat.Application.Services;
 using AHeat.Web.API.Data;
 using AHeat.Web.API.Models;
 using AHeat.Web.Shared;
+using AHeat.Web.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -158,7 +159,7 @@ public class PowerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<bool>> PutPowerDeviceSwitch(int id)
+    public async Task<ActionResult<DeviceChannelState>> PutPowerDeviceSwitch(int id)
     {
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
         if (powerDevice == null)
@@ -170,7 +171,8 @@ public class PowerController : ControllerBase
         var deviceService = _strategyDeviceService.Invoke(powerDevice.DeviceType);
         try
         {
-            return await deviceService.State(powerDevice.HostName, 0);
+            var state = await deviceService.State(powerDevice.HostName, 0);
+            return new DeviceChannelState(powerDevice.ID, state);
         }
         catch (DeviceException ex)
         {
