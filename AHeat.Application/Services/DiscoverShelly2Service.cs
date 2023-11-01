@@ -38,7 +38,7 @@ public class DiscoverShelly2Service : IDiscoverService
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            throw new DiscoverException($"Error when discovering uir {url}", ex);
+            throw new DiscoverException($"Error when discovering url at {url}", ex);
         }        
         return null!;
     }

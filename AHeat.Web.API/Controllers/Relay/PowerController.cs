@@ -3,7 +3,6 @@ using AHeat.Application.Services;
 using AHeat.Web.API.Data;
 using AHeat.Web.API.Models;
 using AHeat.Web.Shared;
-using AHeat.Web.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -51,7 +50,8 @@ public class PowerController : ControllerBase
         var powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
         if (powerDevice == null)
         {
-            return NotFound();
+            return Problem($"No device with id {id} found.", statusCode: StatusCodes.Status404NotFound, title: "Not Found");
+            //return NotFound();
         }
 
         return new PowerDto()
@@ -109,25 +109,26 @@ public class PowerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> PutPowerDevice(int id, PowerDto updatedPowerDevic)
+    public async Task<IActionResult> PutPowerDevice(int id, PowerDto updatedPowerDevice)
     {
-        if (id != updatedPowerDevic.ID)
+        if (id != updatedPowerDevice.ID)
         {
             return BadRequest();
         }
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
         if (powerDevice == null)
         {
-            return NotFound();
+            return Problem($"No device with id {id} found.", statusCode: StatusCodes.Status404NotFound, title: "Not Found");
+            //return NotFound();
         }
 
-        powerDevice.Name = updatedPowerDevic.Name;
-        powerDevice.DeviceType = updatedPowerDevic.DeviceType;
-        powerDevice.DeviceName = updatedPowerDevic.DeviceName;
-        powerDevice.DeviceId = updatedPowerDevic.DeviceId;
-        powerDevice.DeviceMac = updatedPowerDevic.DeviceMac;
-        powerDevice.DeviceModel = updatedPowerDevic.DeviceModel;
-        powerDevice.DeviceGen = updatedPowerDevic.DeviceGen;
+        powerDevice.Name = updatedPowerDevice.Name;
+        powerDevice.DeviceType = updatedPowerDevice.DeviceType;
+        powerDevice.DeviceName = updatedPowerDevice.DeviceName;
+        powerDevice.DeviceId = updatedPowerDevice.DeviceId;
+        powerDevice.DeviceMac = updatedPowerDevice.DeviceMac;
+        powerDevice.DeviceModel = updatedPowerDevice.DeviceModel;
+        powerDevice.DeviceGen = updatedPowerDevice.DeviceGen;
 
         _dbContext.PowerDevices.Update(powerDevice);
         await _dbContext.SaveChangesAsync();
@@ -138,17 +139,44 @@ public class PowerController : ControllerBase
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteRole(int id)
+    public async Task<IActionResult> DeletePowerDevice(int id)
     {
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
         if (powerDevice == null)
         {
-            return NotFound();
+            return Problem($"No device with id {id} found.", statusCode: StatusCodes.Status404NotFound, title: "Not Found");
+            //return NotFound();
         }
 
         _dbContext.PowerDevices.Remove(powerDevice);
         await _dbContext.SaveChangesAsync();
         return NoContent();
+    }
+
+    // get: "api/Relay/Power/5/switch
+    [HttpGet("{id}/switch")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<bool>> PutPowerDeviceSwitch(int id)
+    {
+        PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
+        if (powerDevice == null)
+        {
+            return Problem($"No device with id {id} found.", statusCode: StatusCodes.Status404NotFound, title: "Not Found");
+            //return NotFound();
+        }
+
+        var deviceService = _strategyDeviceService.Invoke(powerDevice.DeviceType);
+        try
+        {
+            return await deviceService.State(powerDevice.HostName, 0);
+        }
+        catch (DeviceException ex)
+        {
+            return Problem(ex.InnerException!.Message, ex.Message, StatusCodes.Status400BadRequest, "Bad Request");
+            //return BadRequest(ex.Message);
+        }
     }
 
     // put: "api/Relay/Power/5/switch/true|false
@@ -161,7 +189,8 @@ public class PowerController : ControllerBase
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
         if (powerDevice == null)
         {
-            return NotFound();
+            return Problem($"No device with id {id} found.", statusCode: StatusCodes.Status404NotFound, title: "Not Found");
+            //return NotFound();
         }
 
         var deviceService = _strategyDeviceService.Invoke(powerDevice.DeviceType);
@@ -171,7 +200,8 @@ public class PowerController : ControllerBase
         }
         catch (DeviceException ex)
         {
-            return BadRequest(ex.Message);
+            return Problem(ex.InnerException!.Message, ex.Message, StatusCodes.Status400BadRequest, "Bad Request");
+            //return BadRequest(ex.Message);
         }
         return NoContent();
     }
@@ -186,7 +216,8 @@ public class PowerController : ControllerBase
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
         if (powerDevice == null)
         {
-            return NotFound();
+            return Problem($"No device with id {id} found.", statusCode: StatusCodes.Status404NotFound, title: "Not Found");
+            //return NotFound();
         }
 
         var deviceService = _strategyDeviceService.Invoke(powerDevice.DeviceType);
@@ -197,7 +228,8 @@ public class PowerController : ControllerBase
         }
         catch (DeviceException ex)
         {
-            return BadRequest(ex.Message);
+            return Problem(ex.InnerException!.Message, ex.Message, StatusCodes.Status400BadRequest, "Bad Request");
+            //return BadRequest(ex.Message);
         }
     }
 
@@ -206,23 +238,25 @@ public class PowerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<IEnumerable<WebHookInfo>>> PostPowerDeviceOffWebHooks(int id, WebHookInfo webHookInfo)
+    public async Task<IActionResult> PostPowerDeviceOffWebHooks(int id, WebHookInfo webHookInfo)
     {
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
         if (powerDevice == null)
         {
-            return NotFound();
+            return Problem($"No device with id {id} found.", statusCode: StatusCodes.Status404NotFound, title: "Not Found");
+            //return NotFound();
         }
 
         var deviceService = _strategyDeviceService.Invoke(powerDevice.DeviceType);
         try
         {
-            await deviceService.CreateTurnOffHook(powerDevice.HostName, 0, webHookInfo.enabeld, "http://192.168.1.131/api/relay/webhook");
+            await deviceService.CreateTurnOffHook(powerDevice.HostName, 0, webHookInfo.Enabeld, "http://192.168.1.131/api/relay/webhook");
             return NoContent();
         }
-        catch (DeviceException ex)
+        catch (WebHookException ex)
         {
-            return BadRequest(ex.Message);
+            return Problem(ex.InnerException!.Message, ex.Message, StatusCodes.Status400BadRequest, "Bad Request");
+            //return BadRequest(ex.Message);
         }
     }
 
@@ -231,26 +265,79 @@ public class PowerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<IEnumerable<WebHookInfo>>> PostPowerDeviceOnWebHooks(int id, WebHookInfo webHookInfo)
+    public async Task<IActionResult> PostPowerDeviceOnWebHooks(int id, WebHookInfo webHookInfo)
     {
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
         if (powerDevice == null)
         {
-            return NotFound();
+            return Problem($"No device with id {id} found.", statusCode: StatusCodes.Status404NotFound, title: "Not Found");
+            //return NotFound();
         }
 
         var deviceService = _strategyDeviceService.Invoke(powerDevice.DeviceType);
         try
         {
-            await deviceService.CreateTurnOnHook(powerDevice.HostName, 0, webHookInfo.enabeld, "http://192.168.1.131/api/relay/webhook");
+            await deviceService.CreateTurnOnHook(powerDevice.HostName, 0, webHookInfo.Enabeld, "http://192.168.1.131/api/relay/webhook");
             return NoContent();
         }
-        catch (DeviceException ex)
+        catch (WebHookException ex)
         {
-            return BadRequest(ex.Message);
+            return Problem(ex.InnerException!.Message, ex.Message, StatusCodes.Status400BadRequest, "Bad Request");
+            //return BadRequest(ex.Message);
         }
     }
 
-    // create webhook
-    // curl -X POST -d '{"id":1,"method":"Webhook.Create","params":{"cid":0,"enable":true,"event":"switch.on","urls":["http://192.168.1.131/api/relay/webhook?mac=${config.sys.device.mac}"]}}' http://${SHELLY}/rpc
+    // put: "api/Relay/Power/5/webhook
+    [HttpPut("{id}/webhook")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> PutPowerDeviceWebHooks(int id, WebHookInfo webHookInfo)
+    {
+        PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
+        if (powerDevice == null)
+        {
+            return Problem($"No device with id {id} found.", statusCode: StatusCodes.Status404NotFound, title: "Not Found");
+            //return NotFound();
+        }
+
+        var deviceService = _strategyDeviceService.Invoke(powerDevice.DeviceType);
+        try
+        {
+            await deviceService.UpdateHook(powerDevice.HostName, webHookInfo.Id, 0, webHookInfo.Enabeld, webHookInfo.Name, "http://192.168.1.131/api/relay/webhook");
+            return NoContent();
+        }
+        catch (WebHookException ex)
+        {
+            return Problem(ex.InnerException!.Message, ex.Message, StatusCodes.Status400BadRequest, "Bad Request");
+            //return BadRequest(ex.Message);
+        }
+    }
+
+    // delete: "api/Relay/Power/5/webhook/1
+    [HttpDelete("{id}/webhook/{hookid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeletePowerDeviceWebHooks(int id, int hookid)
+    {
+        PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
+        if (powerDevice == null)
+        {
+            return Problem($"No device with id {id} found.", statusCode: StatusCodes.Status404NotFound, title: "Not Found");
+            //return NotFound();
+        }
+
+        var deviceService = _strategyDeviceService.Invoke(powerDevice.DeviceType);
+        try
+        {
+            await deviceService.DeleteHook(powerDevice.HostName, hookid);
+            return NoContent();
+        }
+        catch (WebHookException ex)
+        {
+            return Problem(ex.InnerException!.Message, ex.Message, StatusCodes.Status400BadRequest, "Bad Request");
+            //return BadRequest(ex.Message);
+        }
+    }
 }
