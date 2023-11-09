@@ -7,12 +7,12 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace AHeat.Application.Services;
-public class DiscoverShelly2Service : IDiscoverService
+public class DiscoverShelly1Service : IDiscoverService
 {
-    private readonly ILogger<DiscoverShelly2Service> _logger;
+    private readonly ILogger<DiscoverShelly1Service> _logger;
     private readonly IHttpClientFactory _clientFactory;
 
-    public DiscoverShelly2Service(ILogger<DiscoverShelly2Service> logger, IHttpClientFactory clientFactory)
+    public DiscoverShelly1Service(ILogger<DiscoverShelly1Service> logger, IHttpClientFactory clientFactory)
     {
         _logger = logger;
         _clientFactory = clientFactory;
@@ -20,7 +20,7 @@ public class DiscoverShelly2Service : IDiscoverService
 
     public async Task<DicoverInfo> Discover(string url)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{url}/rpc/Shelly.GetDeviceInfo");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{url}/settings");
         var client = _clientFactory.CreateClient();
         try
         {
@@ -28,11 +28,10 @@ public class DiscoverShelly2Service : IDiscoverService
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 var apiString = await response.Content.ReadAsStringAsync();
-                var deviceInfo = JsonConvert.DeserializeObject<DeviceInfo>(apiString);
-                DicoverInfo dicoverInfo = new(url, DeviceTypes.ShellyGen2, deviceInfo!.Name, deviceInfo.Id, deviceInfo.Mac, deviceInfo.Model, deviceInfo.Gen);
+                var deviceInfoSettings = JsonConvert.DeserializeObject<DeviceInfoSettings>(apiString);
+                DicoverInfo dicoverInfo = new(url, DeviceTypes.ShellyGen1, deviceInfoSettings!.Name, deviceInfoSettings.Device.Hostname, deviceInfoSettings.Device.Mac, deviceInfoSettings.Device.Type, 1);
                 return dicoverInfo;
             }
-
         }
         catch (Exception ex)
         {

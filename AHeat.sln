@@ -6,8 +6,10 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4E4FEE32-A938-4646-9FA3-219622093FC5}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		build-suffix.props = build-suffix.props
 		Directory.Build.props = Directory.Build.props
 		README.md = README.md
+		version.props = version.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AHeat.Web.API", "AHeat.Web.API\AHeat.Web.API.csproj", "{7286D1DF-69B1-43B4-9772-669C9A6F1739}"
@@ -16,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AHeat.Web.Shared", "AHeat.W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AHeat.Web.Client", "AHeat.Web.Client\AHeat.Web.Client.csproj", "{65FCF931-09D9-4D06-AC52-6926AF716A96}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AHeat.Application", "AHeat.Application\AHeat.Application.csproj", "{36157420-7F1D-4AEB-8A16-7BAA7AB82E18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AHeat.Application", "AHeat.Application\AHeat.Application.csproj", "{36157420-7F1D-4AEB-8A16-7BAA7AB82E18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

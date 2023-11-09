@@ -10,6 +10,9 @@
         <FlexibleAuthorizeView Permissions="@(Permissions.ViewAccessControl | Permissions.ConfigureAccessControl)">
             <MudNavLink Icon="@Icons.Material.Filled.Lock" Href="admin/access-control" Match="NavLinkMatch.Prefix">Access Control</MudNavLink>
         </FlexibleAuthorizeView>
+        <FlexibleAuthorizeView Permissions="@(Permissions.ViewPowerDevices | Permissions.ConfigurePowerDevices)">
+            <MudNavLink Icon="@Icons.Material.Filled.Devices" Href="admin/devices" Match="NavLinkMatch.Prefix">Devices</MudNavLink>
+        </FlexibleAuthorizeView>
     </MudNavGroup>
     <MudNavLink Icon="@Icons.Material.Filled.QuestionMark" Href="/about" Match="NavLinkMatch.Prefix">About</MudNavLink>
 </MudNavMenu>

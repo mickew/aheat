@@ -12,3 +12,14 @@ public record DeviceInfo(
     bool AuthEn,
     object AuthDomain
 );
+
+internal record Device(
+    string Type,
+    string Mac,
+    string Hostname
+);
+
+internal record DeviceInfoSettings(
+    Device Device,
+    string Name
+);

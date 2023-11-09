@@ -1,4 +1,6 @@
-﻿namespace AHeat.Web.Shared;
+﻿using AHeat.Web.Shared.Models;
 
-public record DicoverInfo(string DeviceHostName, string DeviceName, string DeviceId, string DeviceMac, string DeviceModel, int DeviceGen);
+namespace AHeat.Web.Shared;
+
+public record DicoverInfo(string DeviceHostName, DeviceTypes DeviceType, string DeviceName, string DeviceId, string DeviceMac, string DeviceModel, int DeviceGen);
 

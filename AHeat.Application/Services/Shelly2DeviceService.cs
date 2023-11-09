@@ -135,6 +135,11 @@ public class Shelly2DeviceService : IDeviceService
                 }
                 return list;
             }
+            else
+            {
+                _logger.LogError(response.Content.ToString());
+                throw new WebHookException(response.Content.ToString()!);
+            }
 
         }
         catch (Exception ex)
@@ -142,7 +147,6 @@ public class Shelly2DeviceService : IDeviceService
             _logger.LogError(ex, ex.Message);
             throw new WebHookException($"Error when getting webhooks at {url}", ex);
         }
-        return null!;
     }
 
     public async Task<bool> State(string url, int channel)
@@ -167,7 +171,7 @@ public class Shelly2DeviceService : IDeviceService
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            throw new DeviceException($"Error when switching device at {url}", ex);
+            throw new DeviceException($"Error when getting device status at {url}", ex);
         }
     }
 
@@ -185,7 +189,7 @@ public class Shelly2DeviceService : IDeviceService
                 if (result!.Error != null)
                 {
                     _logger.LogError(result.Error.Message);
-                    throw new WebHookException(result.Error.Message);
+                    throw new DeviceException(result.Error.Message);
                 }
             }
             else

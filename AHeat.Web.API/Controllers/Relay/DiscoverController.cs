@@ -1,6 +1,8 @@
 ﻿using AHeat.Application.Exceptions;
 using AHeat.Application.Interfaces;
+using AHeat.Application.Services;
 using AHeat.Web.Shared;
+using AHeat.Web.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AHeat.Web.API.Controllers.Relay;
@@ -9,11 +11,13 @@ namespace AHeat.Web.API.Controllers.Relay;
 [Route("api/relay/[controller]")]
 public class DiscoverController : ControllerBase
 {
-    private readonly IDiscoverService _discoverService;
+    private readonly ILogger<DiscoverController> _logger;
+    private readonly StrategyDiscoverService _strategyDiscoverService;
 
-    public DiscoverController(IDiscoverService discoverService)
+    public DiscoverController(ILogger<DiscoverController> logger, StrategyDiscoverService strategyDiscoverService)
     {
-        _discoverService = discoverService;
+        _logger = logger;
+        _strategyDiscoverService = strategyDiscoverService;
     }
 
     // Get: "api/Relay/Discover
@@ -25,16 +29,35 @@ public class DiscoverController : ControllerBase
     {
         try
         {
-            DicoverInfo info = await _discoverService.Discover(url);
+            DicoverInfo info = null!;
+            var length = Enum.GetNames(typeof(DeviceTypes)).Length;
+            for (int i = 1; i < length; i++)
+            {
+                try
+                {
+                    var service = _strategyDiscoverService.Invoke((DeviceTypes)i);
+                    info = await service.Discover(url);
+                    if (info != null)
+                    {
+                        break;
+                    }
+                }
+                catch (Exception)
+                {
+                }
+            }
+
             if (info == null)
             {
-                return NotFound("null returned");
+                _logger.LogError("null returned when discovering device at url {url}", url);
+                return NotFound($"null returned when discovering device at url {url}");
             }
             return info;
         }
         catch (DiscoverException ex)
         {
-            return NotFound(ex.Message);
+            _logger.LogError(ex, "Error when discovering device at url {url}", url);
+            return NotFound($"Error when discovering device at url {url}");
         }
     }
 }

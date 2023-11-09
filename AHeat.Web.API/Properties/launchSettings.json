@@ -8,7 +8,7 @@
       },
       "dotnetRunMessages": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "http://192.168.1.131:80"
+      "applicationUrl": "http://localhost:5155"
     },
     "http": {
       "commandName": "Project",
@@ -18,7 +18,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://192.168.1.131:80"
+      "applicationUrl": "http://localhost:5155"
     },
     "https_Client": {
       "commandName": "Project",
@@ -28,7 +28,7 @@
       },
       "dotnetRunMessages": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "https://192.168.1.131;http://192.168.1.131:80"
+      "applicationUrl": "https://localhost:7252;http://localhost:5155"
     },
     "https": {
       "commandName": "Project",

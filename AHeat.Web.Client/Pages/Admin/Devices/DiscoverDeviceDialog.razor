@@ -1,0 +1,172 @@
+﻿@inject AHeat.Web.Client.Services.IDiscoverClient DiscoverClient
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.DeviceUnknown" Class="mr-3 mb-n1" />
+            Discover device!
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        @if (Loading)
+        {
+            <MudProgressCircular Indeterminate="true"></MudProgressCircular>
+        }
+        else
+        {
+            <MudText>@Device.Name</MudText>
+            <MudText>@Device.DeviceType</MudText>
+            <MudText>@Device.HostName</MudText>
+            <MudText>@Device.DeviceName</MudText>
+            <MudText>@Device.DeviceId</MudText>
+            <MudText>@Device.DeviceMac</MudText>
+            <MudText>@Device.DeviceModel</MudText>
+            <MudText>@Device.DeviceGen</MudText>
+        }
+        @*Nested dialog*@
+        <MudDialog @bind-IsVisible="nestedVisible">
+            <TitleContent>
+                <MudText Typo="Typo.h6">
+                    Enter device host/ip address!
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <MudTextField DebounceInterval="100" OnDebounceIntervalElapsed="HandleIntervalElapsed" Variant="Variant.Filled" @bind-Value="@Url" Label="Url" />
+            </DialogContent>
+            <DialogActions>
+                <MudButton OnClick="CancelNested">Cancel</MudButton>
+                <MudButton Disabled=@CloseNestedDisabled Color="Color.Primary" OnClick="CloseNested">Ok</MudButton>
+            </DialogActions>
+        </MudDialog>
+    </DialogContent>
+    <DialogActions>
+        @* <MudButton OnClick="DiscoverHost">Discover</MudButton> *@
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Disabled=@saveDisabled Color="Color.Success" OnClick="SaveDevice">Save</MudButton>
+    </DialogActions>
+
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter] public PowerDto Device { get; set; } = new PowerDto();
+
+    private bool nestedVisible;
+
+    private bool saveDisabled = true;
+
+    private bool Loading = true;
+
+    private bool CloseNestedDisabled = true;
+
+    private string? Url { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        nestedVisible = true;
+    }
+
+    private async Task DiscoverHost()
+    {
+        try
+        {
+            Loading = true;
+            var discoverInfo = await DiscoverClient.DiscoverAsync(Url);
+            Device.Name = discoverInfo.DeviceName;
+            Device.HostName = discoverInfo.DeviceHostName;
+            Device.DeviceType = discoverInfo.DeviceType;
+            Device.DeviceName = discoverInfo.DeviceName;
+            Device.DeviceId = discoverInfo.DeviceId;
+            Device.DeviceMac = discoverInfo.DeviceMac;
+            Device.DeviceModel = discoverInfo.DeviceModel;
+            Device.DeviceGen = discoverInfo.DeviceGen;
+
+            saveDisabled = (string.IsNullOrEmpty(Device.DeviceMac));
+            Loading = false;
+        }
+        catch (Exception)
+        {
+            Cancel();
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog!.Cancel();
+    }
+
+    private void CancelNested()
+    {
+        nestedVisible = false;
+    }
+
+    private void SaveDevice()
+    {
+        MudDialog!.Close(DialogResult.Ok(Device));
+    }
+
+    private async Task CloseNested()
+    {
+        if (IsValidUri(Url!))
+        {
+            nestedVisible = false;
+            await DiscoverHost();
+        }
+    }
+
+    void HandleIntervalElapsed(string debouncedText)
+    {
+        if (IsValidUri(debouncedText))
+        {
+            CloseNestedDisabled = false;
+        }
+        else
+        {
+            CloseNestedDisabled = true;
+        }
+    }
+
+    private bool IsValidUri(String uri)
+    {
+        try
+        {
+            Uri u = new Uri(uri);
+            Console.WriteLine($"uriBuilder.Host is {u.Host}");
+            return CheckIPValid(u.Host);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private bool CheckIPValid(string strIP)
+    {
+        //  Split string by ".", check that array length is 3
+        char chrFullStop = '.';
+        string[] arrOctets = strIP.Split(chrFullStop);
+        if (arrOctets.Length != 4)
+        {
+            return false;
+        }
+        //  Check each substring checking that the int value is less than 255 and that is char[] length is !> 2
+        Int16 MAXVALUE = 255;
+        Int32 temp; // Parse returns Int32
+        foreach (string strOctet in arrOctets)
+        {
+            if (strOctet.Length > 3)
+            {
+                return false;
+            }
+
+            temp = int.Parse(strOctet);
+            if (temp > MAXVALUE)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+}
