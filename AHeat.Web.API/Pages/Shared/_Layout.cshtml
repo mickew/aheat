@@ -1,13 +1,26 @@
-﻿@using Microsoft.AspNetCore.Hosting
+﻿@using AHeat.Web.API.Pages;
+@using Microsoft.AspNetCore.Hosting
 @using Microsoft.AspNetCore.Mvc.ViewEngines
+@using System.Reflection;
+@using System.Runtime.Versioning;
 @inject IWebHostEnvironment Environment
 @inject ICompositeViewEngine Engine
+@{
+    Assembly currentAssembly = typeof(ErrorModel).Assembly;
+    if (currentAssembly == null)
+    {
+        currentAssembly = Assembly.GetCallingAssembly();
+    }
+    string AspDotnetVersion = currentAssembly.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName!;
+    string Version = currentAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
+}
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AHeat.Web.API</title>
+    <title>@ViewData["Title"] - Power Control</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/css/loginstyle.css" />
@@ -21,19 +34,14 @@
         <main role="main" class="pb-1">
             @RenderBody()
         </main>
-@*     <footer class="footer border-top pl-3 text-muted">
+    <footer>
         <div class="container">
-        &copy; 2023 - AHeat.Web.API
-            @{
-                var foundPrivacy = Url.Page("/Privacy", new { area = "" });
-            }
-            @if (foundPrivacy != null)
-            {
-                <a asp-area="" asp-page="/Privacy">Privacy</a>
-            }
+            <div class="inner-footer-contanier">
+                <p class="footer-typography">&copy; 2023 - <a href="http://promarmic.se" rel="nofollow" target="_blank">Power control</a> Version @Version @AspDotnetVersion</p>
+            </div>
         </div>
     </footer>
- *@
+
     <environment include="Development">
         <script src="~/Identity/lib/jquery/dist/jquery.js"></script>
         <script src="~/Identity/js/site.js" asp-append-version="true"></script>

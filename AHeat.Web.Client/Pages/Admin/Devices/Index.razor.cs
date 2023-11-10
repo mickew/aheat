@@ -67,7 +67,7 @@ public partial class Index
             "Warning",
             $"Delete device {device.Name} ?",
             yesText: "Delete!", cancelText: "Cancel");
-        if (result.Value)
+        if (result != null && result.Value)
         {
             await powerClient.DeletePowerDeviceAsync(device.ID);
             PowerDevices.Remove(device);

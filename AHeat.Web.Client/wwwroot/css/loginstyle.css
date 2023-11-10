@@ -92,3 +92,40 @@ form .btn {
 .form-check-input{
     width: auto;
 }
+
+footer {
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    top: auto;
+    bottom: 0;
+    position: fixed;
+    right: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: column;
+    background-color: rgba(89,74,256,1);
+    color: rgba(255,255,255,1);
+}
+
+.container {
+    height: 48px;
+    padding-left: 24px;
+    padding-right: 24px;
+    display: flex;
+    position: relative;
+    align-items: inherit;
+}
+
+.inner-footer-contanier {
+    justify-content: center !important;
+    width: calc(100% + 24px);
+    display: flex;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    align-items: center;
+}
+
+.footer-typography {
+    font-size: small;
+}
