@@ -44,6 +44,7 @@
 
   <PropertyGroup>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <UserSecretsId>0544df87-dce3-4caf-88f3-5636517b3dcd</UserSecretsId>
   </PropertyGroup>
 
   <Target Name="NSwag" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' == 'Debug' ">
