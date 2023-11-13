@@ -1,0 +1,32 @@
+﻿@page "/admin/devices"
+@* @attribute [Authorize(Permissions.ViewPowerDevices | Permissions.ConfigurePowerDevices)]
+ *@
+
+<PageTitle>Power Control - Devices</PageTitle>
+<div>
+    <MudChip Label="true" Color="Color.Info" Icon="@Icons.Material.Filled.Devices">Devices</MudChip>
+</div>
+
+<MudDataGrid Items="@PowerDevices">
+    <Columns>
+        <PropertyColumn Property="x => x.Name" Title="Name" />
+        <PropertyColumn Property="x => x.HostName" Title="Host" />
+        <PropertyColumn Property="x => x.DeviceType" Title="Type" />
+        @* <PropertyColumn Property="x => x.DeviceName" Title="Device Name" /> *@
+        @* <PropertyColumn Property="x => x.DeviceId" Title="Device Id" /> *@
+        <PropertyColumn Property="x => x.DeviceMac" Title="Mac" />
+        @* <PropertyColumn Property="x => x.DeviceModel" Title="Model" /> *@
+        @* <PropertyColumn Property="x => x.DeviceGen" Title="Gen" /> *@
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudStack Row>
+                    <MudButton StartIcon="@Icons.Material.Filled.Edit" @onclick="() => EditDevice(context.Item)" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Edit</MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.Delete" @onclick="() => DeleteDevice(context.Item)" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Warning">Delete</MudButton>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+<div class="d-flex flex-wrap mt-4 justify-end">
+    <MudButton StartIcon="@Icons.Material.Filled.DeviceUnknown" @onclick="() => DiscoverDevice()" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Success">Discover device</MudButton>
+</div>

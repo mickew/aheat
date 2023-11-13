@@ -1,0 +1,102 @@
+﻿@inject AHeat.Web.Client.Services.IPowerClient PowerClient
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.DeviceUnknown" Class="mr-3 mb-n1" />
+            Edit Device!
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="@device.Name" Label="Name" />
+        <MudTextField @bind-Value="@device.HostName" Label="Host" />
+        @if (device.DeviceType == Web.Shared.Models.DeviceTypes.ShellyGen2)
+        {
+            @if (onWebHook == null)
+            {
+                <MudButton OnClick="AddOnWebhook" Color="@Color.Success">Add On webhook</MudButton>
+            }
+            else
+            {
+                <MudButton OnClick="DeleteOnWebhook" Color="@Color.Warning">Delete On webhook</MudButton>
+            }
+            @if (offWebHook == null)
+            {
+                <MudButton OnClick="AddOffWebhook" Color="@Color.Success">Add Off webhook</MudButton>
+            }
+            else
+            {
+                <MudButton OnClick="DeleteOffWebhook" Color="@Color.Warning">Delete Off webhook</MudButton>
+            }
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Success" OnClick="SaveDevice">Save</MudButton>
+    </DialogActions>
+
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter] public PowerDto device { get; set; } = new PowerDto();
+
+    private WebHookInfo? onWebHook;
+    private WebHookInfo? offWebHook;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if (device.DeviceType == Web.Shared.Models.DeviceTypes.ShellyGen2)
+        {
+            await GetWebhookInfo();
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog!.Cancel();
+    }
+
+    private void SaveDevice()
+    {
+        MudDialog!.Close(DialogResult.Ok(device));
+    }
+    private async Task GetWebhookInfo()
+    {
+        var info = await PowerClient.GetPowerDeviceWebHooksAsync(device.ID);
+        onWebHook = info.FirstOrDefault(x => x.Name == "OnHookSender");
+        offWebHook = info.FirstOrDefault(x => x.Name == "OffHookSender");
+    }
+
+    private async Task AddOnWebhook()
+    {
+        await PowerClient.PostPowerDeviceOnWebHookAsync(device.ID, new WebHookInfo(0, "OnHookSender", true));
+        await GetWebhookInfo();
+    }
+
+    private async Task AddOffWebhook()
+    {
+        await PowerClient.PostPowerDeviceOffWebHookAsync(device.ID, new WebHookInfo(0, "OffHookSender", true));
+        await GetWebhookInfo();
+    }
+
+    private async Task DeleteOnWebhook()
+    {
+        if (onWebHook != null)
+        {
+            await PowerClient.DeletePowerDeviceWebHookAsync(device.ID, onWebHook.Id);
+            await GetWebhookInfo();
+        }
+    }
+
+    private async Task DeleteOffWebhook()
+    {
+        if (offWebHook != null)
+        {
+            await PowerClient.DeletePowerDeviceWebHookAsync(device.ID, offWebHook.Id);
+            await GetWebhookInfo();
+        }
+    }
+}

@@ -1,12 +1,31 @@
 ﻿@page "/"
-@* @attribute [Authorize] *@
-@using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@attribute [Authorize]
 
-@inject NavigationManager Navigation
+<PageTitle>Power Control - Dashboard</PageTitle>
 
-<PageTitle>Dashboard</PageTitle>
-
-<MudText Typo="Typo.h3" GutterBottom="true">Main Dashboard!</MudText>
-<MudAlert Severity="Severity.Normal">Main content will come here here!</MudAlert>
-
+<MudDataGrid Items="@Devices">
+    <Columns>
+        <TemplateColumn>
+            <CellTemplate>
+                <MudText Typo="Typo.h3">@context.Item.Name</MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudStack Row>
+                    @{string stateColor = context.Item.State ? $"color:{Colors.Green.Default};" : $"color: {Colors.Red.Default};";}
+                    @{bool prossesing = context.Item.Prosessing;}
+                    <MudIconButton Disabled="@prossesing" Icon="@Icons.Material.Filled.PowerSettingsNew" Style="@stateColor" Size="Size.Large" @onclick="() => ToggleDevice(context.Item.Id, context.Item.State)">
+                    @if (context.Item.Prosessing)
+                    {
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                    }
+                    else
+                    {
+                    }
+                    </MudIconButton>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>

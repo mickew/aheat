@@ -27,11 +27,11 @@ public partial class Index
         Roles = await RolesClient.GetRolesAsync();
     }
 
-    private async Task AddEditRole(RoleDto role)
+    private async Task AddEditRole(RoleDto role, bool add)
     {
         var parameters = new DialogParameters<AddEditRoleDialog> { { x => x.role, role } };
 
-        var dialog = await DialogService.ShowAsync<AddEditRoleDialog>("Add Role", parameters);
+        var dialog = await DialogService.ShowAsync<AddEditRoleDialog>(add ? "Add Role!" : "Edit Role!", parameters);
         var result = await dialog.Result;
 
         if (!result.Canceled)
@@ -61,7 +61,7 @@ public partial class Index
             "Warning",
             $"Delete role {role.Name} ?",
             yesText: "Delete!", cancelText: "Cancel");
-        if (result.Value) 
+        if (result != null && result.Value)
         {
             await RolesClient.DeleteRoleAsync(role.Id);
             Roles.Remove(role);

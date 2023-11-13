@@ -1,7 +1,5 @@
 ﻿@inherits LayoutComponentBase
 
-@inject NavigationManager Navigation
-
 <MudThemeProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
@@ -19,23 +17,16 @@
         <NavMenu />
     </MudDrawer>
     <MudMainContent>
-        <MudContainer Class="mt-6" MaxWidth="MaxWidth.Medium">
-            @Body
+        <MudContainer Class="mt-6" MaxWidth="MaxWidth.Medium" >
+            <div class="content" style="padding-bottom:60px">
+                @Body
+            </div>
         </MudContainer>
     </MudMainContent>
+        <MudAppBar Elevation="1" Style="top: auto; bottom: 0" Dense="true" Fixed="true">
+            <MudGrid Justify="Justify.Center">
+            <MudText Style="font-size:small">© 2023 - <a href="http://promarmic.se" rel="nofollow" target="_blank">Power control</a> Version @Version @AspDotnetVersion</MudText>
+            </MudGrid>
+        </MudAppBar>
 </MudLayout>
 
-@code {
-    bool _drawerOpen = false;
-
-    void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
-
-    private void BeginLogOut()
-    {
-        Navigation.NavigateToLogout("authentication/logout", "/");
-    }
-
-}

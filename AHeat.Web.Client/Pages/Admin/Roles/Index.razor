@@ -1,7 +1,7 @@
 ﻿@page "/admin/roles"
 @attribute [Authorize(Permissions.ViewUsers | Permissions.ManageUsers)]
 
-<PageTitle>Roles</PageTitle>
+<PageTitle>Power Control - Roles</PageTitle>
 <div>
     <MudChip Label="true" Color="Color.Info" Icon="@Icons.Material.Filled.FeaturedPlayList">Roles</MudChip>
 </div>
@@ -23,7 +23,7 @@
         <TemplateColumn CellClass="d-flex justify-end">
             <CellTemplate>
                 <MudStack Row>
-                    <MudButton Disabled=@UserGotNoRights StartIcon="@Icons.Material.Filled.Edit" @onclick="() => AddEditRole(context.Item)" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Edit</MudButton>
+                    <MudButton Disabled=@UserGotNoRights StartIcon="@Icons.Material.Filled.Edit" @onclick="() => AddEditRole(context.Item, false)" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Edit</MudButton>
                     <MudButton Disabled=@UserGotNoRights StartIcon="@Icons.Material.Filled.Delete" @onclick="() => DeleteRole(context.Item)" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Warning">Delete</MudButton>
                 </MudStack>
             </CellTemplate>
@@ -31,5 +31,5 @@
     </Columns>
 </MudDataGrid>
 <div class="d-flex flex-wrap mt-4 justify-end">
-    <MudButton Disabled=@UserGotNoRights StartIcon="@Icons.Material.Filled.Add" @onclick="() => AddEditRole(new RoleDto())" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Success">Add</MudButton>
+    <MudButton Disabled=@UserGotNoRights StartIcon="@Icons.Material.Filled.Add" @onclick="() => AddEditRole(new RoleDto(), true)" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Success">Add</MudButton>
 </div>
