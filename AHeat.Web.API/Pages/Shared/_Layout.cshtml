@@ -12,7 +12,8 @@
         currentAssembly = Assembly.GetCallingAssembly();
     }
     string AspDotnetVersion = currentAssembly.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName!;
-    string Version = currentAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
+    string Version = currentAssembly.GetName().Version!.ToString();
+    ;
 }
 
 <!DOCTYPE html>

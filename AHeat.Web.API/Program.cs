@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using AHeat.Web.API.Hubs;
 using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
+using Microsoft.Data.Sqlite;
 
 namespace AHeat.Web.API;
 
@@ -45,13 +46,17 @@ public class Program
             WebApplicationBuilder builder = CreateBuilder(args);
             WebApplication app = CreateWebApp(builder);
 
+            using var scope = app.Services.CreateScope();
+
+            var services = scope.ServiceProvider;
+            var addressService = services.GetRequiredService<IApplicationHostAddressService>();
+            var ipAddress = addressService.IpAddress;
+            Log.Information("Application host address: {ipAddress}", ipAddress);
+
             try
             {
                 if (applyDbMigrationWithDataSeedFromProgramArguments)
                 {
-                    using var scope = app.Services.CreateScope();
-
-                    var services = scope.ServiceProvider;
 
                     var initializer = services.GetRequiredService<DbInitializer>();
 
@@ -62,6 +67,8 @@ public class Program
             {
                 Log.Error(ex, "An error occurred while migrating or initializing the database.");
             }
+
+
             await app.RunAsync();
         }
         catch (Exception ex)
@@ -125,10 +132,19 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
-        // Add services to the container.
+
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        var sqliteBuilder = new SqliteConnectionStringBuilder(connectionString);
+        sqliteBuilder.DataSource = Path.Combine($"{builder.Environment.ContentRootPath}{Path.DirectorySeparatorChar}", sqliteBuilder.DataSource);
+        var directory = Path.GetDirectoryName(sqliteBuilder.DataSource);
+        if (!Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory!);
+        }
+
+        // Add services to the container.
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlite(connectionString));
+            options.UseSqlite(sqliteBuilder.ToString()));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
         builder.Services
@@ -160,6 +176,7 @@ public class Program
             configure.Title = "AHeatWeb";
         });
 
+        builder.Services.AddSingleton<IApplicationHostAddressService, ApplicationHostAddressService>();
         builder.Services.AddScoped<DbInitializer>();
 
         builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
@@ -169,34 +186,26 @@ public class Program
         builder.Services.AddScoped<DiscoverShelly2Service>();
         builder.Services.AddScoped<StrategyDiscoverService>(provider => (deviceType) =>
         {
-            switch (deviceType)
+            return deviceType switch
             {
-                case DeviceTypes.Generic:
-                    throw new NotImplementedException();
-                case DeviceTypes.ShellyGen1:
-                    return provider.GetRequiredService<DiscoverShelly1Service>();
-                case DeviceTypes.ShellyGen2:
-                    return provider.GetRequiredService<DiscoverShelly2Service>();
-                default:
-                    throw new NotImplementedException();
-            }
+                DeviceTypes.Generic => throw new NotImplementedException(),
+                DeviceTypes.ShellyGen1 => provider.GetRequiredService<DiscoverShelly1Service>(),
+                DeviceTypes.ShellyGen2 => provider.GetRequiredService<DiscoverShelly2Service>(),
+                _ => throw new NotImplementedException(),
+            };
         });
 
         builder.Services.AddScoped<Shelly2DeviceService>();
         builder.Services.AddScoped<Shelly1DeviceService>();
         builder.Services.AddScoped<StrategyDeviceService>(provider => (deviceType) =>
         {
-            switch (deviceType)
+            return deviceType switch
             {
-                case DeviceTypes.Generic:
-                    throw new NotImplementedException();
-                case DeviceTypes.ShellyGen1:
-                    return provider.GetRequiredService<Shelly1DeviceService>();
-                case DeviceTypes.ShellyGen2:
-                    return provider.GetRequiredService<Shelly2DeviceService>();
-                default:
-                    throw new NotImplementedException();
-            }
+                DeviceTypes.Generic => throw new NotImplementedException(),
+                DeviceTypes.ShellyGen1 => provider.GetRequiredService<Shelly1DeviceService>(),
+                DeviceTypes.ShellyGen2 => provider.GetRequiredService<Shelly2DeviceService>(),
+                _ => throw new NotImplementedException(),
+            };
         });
         return builder;
     }
