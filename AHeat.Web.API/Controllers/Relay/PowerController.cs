@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using AHeat.Application.Exceptions;
+using AHeat.Application.Interfaces;
 using AHeat.Application.Services;
 using AHeat.Web.API.Data;
 using AHeat.Web.API.Models;
@@ -16,15 +17,13 @@ public class PowerController : ControllerBase
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly StrategyDeviceService _strategyDeviceService;
-    private readonly string _myIp;
+    private readonly IApplicationHostAddressService _applicationHostAddressService;
 
-    public PowerController(ApplicationDbContext dbContext, StrategyDeviceService strategyDeviceService)
+    public PowerController(ApplicationDbContext dbContext, StrategyDeviceService strategyDeviceService, IApplicationHostAddressService applicationHostAddressService)
     {
         _dbContext = dbContext;
         _strategyDeviceService = strategyDeviceService;
-        
-        var ips = System.Net.Dns.GetHostAddresses(Dns.GetHostName());
-        _myIp = ips.Where(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).FirstOrDefault()!.ToString();
+        _applicationHostAddressService = applicationHostAddressService;
     }
 
     // Get: "api/Relay/Power
@@ -257,7 +256,7 @@ public class PowerController : ControllerBase
         var deviceService = _strategyDeviceService.Invoke(powerDevice.DeviceType);
         try
         {
-            await deviceService.CreateTurnOffHook(powerDevice.HostName, 0, webHookInfo.Enabeld, $"http://{_myIp}/api/relay/webhook");
+            await deviceService.CreateTurnOffHook(powerDevice.HostName, 0, webHookInfo.Enabeld, $"http://{_applicationHostAddressService.IpAddress}/api/relay/webhook");
             return NoContent();
         }
         catch (WebHookException ex)
@@ -284,7 +283,7 @@ public class PowerController : ControllerBase
         var deviceService = _strategyDeviceService.Invoke(powerDevice.DeviceType);
         try
         {
-            await deviceService.CreateTurnOnHook(powerDevice.HostName, 0, webHookInfo.Enabeld, $"http://{_myIp}/api/relay/webhook");
+            await deviceService.CreateTurnOnHook(powerDevice.HostName, 0, webHookInfo.Enabeld, $"http://{_applicationHostAddressService.IpAddress}/api/relay/webhook");
             return NoContent();
         }
         catch (WebHookException ex)
@@ -311,7 +310,7 @@ public class PowerController : ControllerBase
         var deviceService = _strategyDeviceService.Invoke(powerDevice.DeviceType);
         try
         {
-            await deviceService.UpdateHook(powerDevice.HostName, webHookInfo.Id, 0, webHookInfo.Enabeld, webHookInfo.Name, $"http://{_myIp}/api/relay/webhook");
+            await deviceService.UpdateHook(powerDevice.HostName, webHookInfo.Id, 0, webHookInfo.Enabeld, webHookInfo.Name, $"http://{_applicationHostAddressService.IpAddress}/api/relay/webhook");
             return NoContent();
         }
         catch (WebHookException ex)

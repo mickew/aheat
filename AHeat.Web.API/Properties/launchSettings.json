@@ -22,6 +22,7 @@
     },
     "https_Client": {
       "commandName": "Project",
+      "commandLineArgs": "/seed",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -32,7 +33,6 @@
     },
     "https": {
       "commandName": "Project",
-      "commandLineArgs": "",
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
