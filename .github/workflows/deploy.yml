@@ -1,4 +1,5 @@
-# This is a basic workflow to help you get started with Actions
+# This workflow will build and deploy a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
 name: Deploy
 
@@ -14,20 +15,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Checkout and Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 7.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Run Deploy
       run: |
-        cd rpicasesystem
+        cd AHeat.Web.API
         dotnet publish -c Release -o ../dotnet-app --runtime linux-arm --self-contained true
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: application-artifacts
         path: dotnet-app/
 
+  release-project:
+    name: Release Project
+    runs-on: ubuntu-latest
+    needs: build-project
+    steps:
+      - name: Download content
+        uses: actions/download-artifact@v3
+        with:
+          name: application-artifacts
+      - name: Archive site content
+        uses: thedoctor0/zip-release@0.7.5
+        with:
+          type: 'zip'
+          filename: release.zip
+      - name: Upload Release
+        uses: ncipollo/release-action@v1.12.0
+        with:
+          artifacts: "release.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
