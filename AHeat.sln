@@ -20,6 +20,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AHeat.Web.Client", "AHeat.W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AHeat.Application", "AHeat.Application\AHeat.Application.csproj", "{36157420-7F1D-4AEB-8A16-7BAA7AB82E18}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{AC32FD9D-2890-44EE-9850-A5BFCF42DA45}"
+	ProjectSection(SolutionItems) = preProject
+		Tools\default = Tools\default
+		Tools\install.sh = Tools\install.sh
+		Tools\powercontrolsystem.service = Tools\powercontrolsystem.service
+		Tools\uninstall.sh = Tools\uninstall.sh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
