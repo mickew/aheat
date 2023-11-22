@@ -7,6 +7,11 @@ name: Deploy
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      environment_tag:
+        description: 'Enter Tag'     
+        required: true
+        default: 'v0.0.0'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -37,18 +42,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-project
     steps:
-      - name: Download content
-        uses: actions/download-artifact@v3
-        with:
-          name: application-artifacts
-      - name: Archive site content
-        uses: thedoctor0/zip-release@0.7.5
-        with:
-          type: 'zip'
-          filename: release.zip
-      - name: Upload Release
-        uses: ncipollo/release-action@v1.12.0
-        with:
-          artifacts: "release.zip"
-          token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Download content
+      uses: actions/download-artifact@v3
+      with:
+        name: application-artifacts
+    - name: Archive site content
+      uses: thedoctor0/zip-release@0.7.5
+      with:
+        type: 'zip'
+        filename: release.zip
+    - name: Upload Release
+      uses: ncipollo/release-action@v1.12.0
+      with:
+        artifacts: "release.zip"
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit: ${{ github.sha }}
+        tag: "${{ github.event.inputs.environment_tag }}"
           
