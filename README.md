@@ -1,4 +1,6 @@
 # Askholmen heat system
+[![Build](https://github.com/mickew/aheat/actions/workflows/build.yml/badge.svg)](https://github.com/mickew/aheat/actions/workflows/build.yml)
+[![Deploy](https://github.com/mickew/aheat/actions/workflows/deploy.yml/badge.svg)](https://github.com/mickew/aheat/actions/workflows/deploy.yml)
 ## Askholmen heat system
 
 ### Databese migrations
