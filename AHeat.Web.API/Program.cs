@@ -160,6 +160,10 @@ public class Program
                 options.ApiResources.Single().UserClaims.Add("role");
                 options.IdentityResources["openid"].UserClaims.Add("permissions");
                 options.ApiResources.Single().UserClaims.Add("permissions");
+                options.IdentityResources["openid"].UserClaims.Add("firstname");
+                options.ApiResources.Single().UserClaims.Add("firstname");
+                options.IdentityResources["openid"].UserClaims.Add("lastname");
+                options.ApiResources.Single().UserClaims.Add("lastname");
             });
 
         JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("role");
