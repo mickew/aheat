@@ -37,13 +37,13 @@ form .form-field::before {
   background-size: cover;
   background-repeat: no-repeat;
 }
-form .form-field:nth-child(1)::before {
+form .form-field:nth-child(2)::before {
   background-image: url(/img/user-icon.png);
   width: 20px;
   height: 20px;
   top: 15px;
 }
-form .form-field:nth-child(2)::before {
+form .form-field:nth-child(3)::before {
   background-image: url(/img/lock-icon.png);
   width: 16px;
   height: 16px;
@@ -91,6 +91,10 @@ form .btn {
 }
 .form-check-input{
     width: auto;
+}
+
+.text-danger {
+    color: rgba(244,67,54,1);
 }
 
 footer {
