@@ -1,0 +1,81 @@
+﻿@inject AHeat.Web.Client.Services.IRolesClient RolesClient
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Person" Class="mr-3 mb-n1" />
+            @MudDialog!.Title
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm Model="@User" @ref="@form" Validation="@UserDtoValidator.ValidateValue" ValidationDelay="0">
+            <MudTextField @bind-Value="@User.UserName" Label="User Name" For="@(() => User.UserName)" />
+            <MudTextField @bind-Value="@User.Email" Label="Email" For="@(() => User.Email)" />
+            <MudTextField @bind-Value="@User.FirstName" Label="First Name" For="@(() => User.FirstName)" />
+            <MudTextField @bind-Value="@User.LastName" Label="Last Name" For="@(() => User.LastName)" />
+
+            <MudSimpleTable Style="overflow-x: auto;">
+                <thead>
+                    <tr>
+                        <th>Roles</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var role in Roles)
+                    {
+                        <tr>
+                            <div class="d-flex align-center justify-space-between">
+                                <MudCheckBox T="bool" Label="@role.Name" checked="@User.Roles.Contains(role.Name)" CheckedChanged="((e) => ToggleSelectedRole(role.Name))" />
+                            </div>
+                        </tr>
+                    }
+                </tbody>
+            </MudSimpleTable>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Success" OnClick="SaveUser">Save</MudButton>
+    </DialogActions>
+
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter] public UserDto User { get; set; } = new UserDto();
+
+    [Parameter] public ICollection<RoleDto> Roles { get; set; } = new List<RoleDto>();
+
+    public UserDtoFluentValidator UserDtoValidator = new UserDtoFluentValidator();
+
+    public MudForm? form;
+
+    private void Cancel()
+    {
+        MudDialog!.Cancel();
+    }
+
+    private async Task SaveUser()
+    {
+        await form!.Validate();
+        if (form!.IsValid)
+        {
+            MudDialog!.Close(DialogResult.Ok(User));
+        }
+    }
+
+    private void ToggleSelectedRole(string roleName)
+    {
+        if (User.Roles.Contains(roleName))
+        {
+            User.Roles.Remove(roleName);
+        }
+        else
+        {
+            User.Roles.Add(roleName);
+        }
+
+        StateHasChanged();
+    }
+}

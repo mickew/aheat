@@ -14,6 +14,7 @@ public class DbInitializer
     private const string AdministratorsRole = "Administrators";
     private const string AccountsRole = "Accounts";
     private const string OperationsRole = "Operations";
+    public const string DefaultAdminUserName = "admin";
 
     private const string DefaultPassword = "Password123!";
     public DbInitializer(
@@ -61,7 +62,7 @@ public class DbInitializer
         await _roleManager.UpdateAsync(adminRole);
 
         // Create default admin user
-        var adminUserName = "admin";
+        var adminUserName = DefaultAdminUserName;
         var adminUser = new User { UserName = adminUserName, Email = adminUserName, FirstName = "Admin", LastName = "Localhost" };
         await _userManager.CreateAsync(adminUser, DefaultPassword);
 
