@@ -19,6 +19,8 @@ public partial class Index
 
     public List<PowerDto> PowerDevices { get; set; } = new List<PowerDto>();
 
+    protected bool UserGotNoRights { get; set; } = true;
+
     protected override async Task OnInitializedAsync()
     {
         var res = await powerClient.GetPowerDevicesAsync();

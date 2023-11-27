@@ -30,7 +30,7 @@ public class PowerController : ControllerBase
     // Get: "api/Relay/Power
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [Authorize(Permissions.ConfigurePowerDevices)]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<PowerDto>>> GetPowerDevices()
     {
         var powerDevices = await _dbContext.PowerDevices.OrderBy(p => p.Name).ToListAsync();

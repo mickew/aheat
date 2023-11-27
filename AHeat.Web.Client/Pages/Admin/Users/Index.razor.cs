@@ -55,12 +55,12 @@ public partial class Index
         {
             if (result.Data is UserDto)
             {
-                user = ((UserDto)result.Data);
+                theUser = ((UserDto)result.Data);
                 if (string.IsNullOrEmpty(user.Id))
                 {
                     try
                     {
-                        user = await UsersClient.PostUserAsync(user);
+                        theUser = await UsersClient.PostUserAsync(theUser);
                     }
                     catch (ApiException ex)
                     {
@@ -69,14 +69,14 @@ public partial class Index
                         Snackbar.Add(ex.Message, Severity.Error);
                         return;
                     }
-                    Users.Add(user);
+                    Users.Add(theUser);
                     Snackbar.Add($"User {user.UserName} added", Severity.Success);
                 }
                 else
                 {
                     try
                     {
-                        await UsersClient.PutUserAsync(user.Id, user);
+                        await UsersClient.PutUserAsync(theUser.Id, theUser);
                     }
                     catch (ApiException ex)
                     {
@@ -85,8 +85,11 @@ public partial class Index
                         Snackbar.Add(ex.Message, Severity.Error);
                         return;
                     }
+                    Users.Remove(user);
+                    Users.Add(theUser);
                     Snackbar.Add($"User {user.UserName} updated", Severity.Success);
                 }
+                StateHasChanged();
             }
         }
     }

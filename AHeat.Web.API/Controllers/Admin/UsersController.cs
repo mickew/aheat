@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AHeat.Web.API.Data;
+using System.Security.Claims;
 
 namespace AHeat.Web.API.Controllers.Admin;
 
@@ -173,6 +174,37 @@ public class UsersController : ControllerBase
                 _logger.LogError(error.Description);
             }
             return BadRequest(result.Errors);
+        }
+
+        return NoContent();
+    }
+
+    // PUT: api/Admin/Users/5/ResetPassword
+    [HttpPut("changepassword")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Authorize]
+    public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
+    {
+        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        var user = await _userManager.FindByIdAsync(userId!);
+        if (user == null)
+        {
+            _logger.LogError($"User with id {userId} not found");
+            return NotFound();
+        }
+
+        var result = await _userManager.ChangePasswordAsync(user, changePasswordDto.OldPassword, changePasswordDto.NewPassword);
+
+        if (!result.Succeeded)
+        {
+            _logger.LogError($"Error changing password for user {user.UserName}");
+            foreach (var error in result.Errors)
+            {
+                _logger.LogError(error.Description);
+            }
+            return Problem(result.Errors.FirstOrDefault()!.Description, statusCode: StatusCodes.Status400BadRequest, title: "Bad request");
+            //return BadRequest(result.Errors);
         }
 
         return NoContent();

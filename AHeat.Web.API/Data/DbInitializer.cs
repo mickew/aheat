@@ -63,7 +63,7 @@ public class DbInitializer
 
         // Create default admin user
         var adminUserName = DefaultAdminUserName;
-        var adminUser = new User { UserName = adminUserName, Email = adminUserName, FirstName = "Admin", LastName = "Localhost" };
+        var adminUser = new User { UserName = adminUserName, Email = "admin@localhost.local", FirstName = "Admin", LastName = "Localhost" };
         await _userManager.CreateAsync(adminUser, DefaultPassword);
 
         adminUser = await _userManager.FindByNameAsync(adminUserName);
@@ -74,7 +74,7 @@ public class DbInitializer
 
         // Create default auditor user
         var auditorUserName = "auditor";
-        var auditorUser = new User { UserName = auditorUserName, Email = auditorUserName, FirstName = "Auditor", LastName = "Localhost" };
+        var auditorUser = new User { UserName = auditorUserName, Email = "auditor@localhost.local", FirstName = "Auditor", LastName = "Localhost" };
         await _userManager.CreateAsync(auditorUser, DefaultPassword);
 
         await _context.SaveChangesAsync();
