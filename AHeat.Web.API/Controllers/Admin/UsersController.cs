@@ -23,7 +23,7 @@ public class UsersController : ControllerBase
 
     // GET: api/Admin/Users
     [HttpGet]
-    [Authorize(Permissions.ViewUsers | Permissions.ManageUsers)]
+    [Authorize(Permissions.ViewUsers)]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
     {
         return await _userManager.Users
