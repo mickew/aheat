@@ -2,6 +2,7 @@
 using AHeat.Application.Interfaces;
 using AHeat.Application.Services;
 using AHeat.Web.Shared;
+using AHeat.Web.Shared.Authorization;
 using AHeat.Web.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +26,7 @@ public class DiscoverController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Authorize(Permissions.ConfigurePowerDevices)]
     public async Task<ActionResult<DicoverInfo>> Discover(string url)
     {
         try
