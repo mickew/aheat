@@ -1,15 +1,5 @@
 {
   "profiles": {
-    "http_Client": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "dotnetRunMessages": true,
-      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "http://localhost:5155"
-    },
     "http": {
       "commandName": "Project",
       "launchBrowser": true,
@@ -20,16 +10,15 @@
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5155"
     },
-    "https_Client": {
+    "http_Client": {
       "commandName": "Project",
-      "commandLineArgs": "/seed",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "https://localhost:7252;http://localhost:5155"
+      "applicationUrl": "http://localhost:5155"
     },
     "https": {
       "commandName": "Project",
@@ -40,6 +29,20 @@
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7252;http://localhost:5155"
+    },
+    "https_Client": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+      "applicationUrl": "https://localhost:7252;http://localhost:5155"
+    },
+    "Run EF Migrations": {
+      "commandName": "Project",
+      "commandLineArgs": "/seed"
     },
     "IIS Express": {
       "commandName": "IISExpress",

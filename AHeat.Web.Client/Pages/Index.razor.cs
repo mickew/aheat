@@ -17,6 +17,8 @@ public partial class Index : IAsyncDisposable
 
     public List<Device> Devices { get; set; } = new List<Device>();
 
+    public List<ClimatDevice> ClimatDevices { get; set; } = new List<ClimatDevice>();
+
     private HubConnection? _hubConnection;
 
     protected override async Task OnInitializedAsync()
@@ -50,6 +52,21 @@ public partial class Index : IAsyncDisposable
                 StateHasChanged();
             }
         });
+        _hubConnection.On<string, string, string, string>("ClimateUpdate", (id, name, temperature, humidity) =>
+        {
+            Console.WriteLine("ClimateUpdate received");
+            var climateToUpdate = ClimatDevices.FirstOrDefault(d => d.Id == id);
+            if (climateToUpdate == null)
+            {
+                ClimatDevices.Add(new ClimatDevice() { Id = id, Name = name, Temperature = temperature, Humidity = humidity });
+            }
+            else
+            {
+                climateToUpdate.Temperature = temperature;
+                climateToUpdate.Humidity = humidity;
+            }
+            StateHasChanged();
+        });
         await _hubConnection.StartAsync();
         Console.WriteLine("_hubConnection started");
     }
@@ -58,8 +75,9 @@ public partial class Index : IAsyncDisposable
     {
         var device = Devices.Where(x => x.Id == id).FirstOrDefault();
         device!.Prosessing = true;
+        StateHasChanged();
         await powerClient.PutPowerDeviceSwitchAsync(id, !state);
-        await Task.Delay(500);
+        await Task.Delay(1000);
         //var status = await powerClient.GetPowerDeviceSwitchAsync(id);
         //device.State = status.state;
         device!.Prosessing = false;
@@ -86,5 +104,13 @@ public partial class Index : IAsyncDisposable
         public string? Name { get; init; }
         public bool State { get; set; }
         public bool Prosessing { get; set; }
+    }
+
+    public class ClimatDevice
+    {
+        public string? Id { get; init; }
+        public string? Name { get; init; }
+        public string? Temperature { get; set; }
+        public string? Humidity { get; set; }
     }
 }

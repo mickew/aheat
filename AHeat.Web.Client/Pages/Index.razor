@@ -5,7 +5,7 @@
 
 <MudDataGrid Items="@Devices">
     <Columns>
-        <TemplateColumn>
+        <TemplateColumn Title="Name">
             <CellTemplate>
                 <MudText Typo="Typo.h3">@context.Item.Name</MudText>
             </CellTemplate>
@@ -27,5 +27,14 @@
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+<div class="d-flex flex-wrap mt-4 justify-end">
+</div>
+<MudDataGrid Items="@ClimatDevices">
+    <Columns>
+        <PropertyColumn Property="x => x.Name" Title="Name"/>
+        <PropertyColumn Property="x => x.Temperature" Title="Temperature (°C)" />
+        <PropertyColumn Property="x => x.Humidity" Title="Humidity (%)" />
     </Columns>
 </MudDataGrid>
