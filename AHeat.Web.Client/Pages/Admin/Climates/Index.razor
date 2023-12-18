@@ -1,0 +1,35 @@
+﻿@page "/admin/climates"
+@attribute [Authorize(Permissions.ViewClimateDevices | Permissions.ConfigureClimateDevices)]
+
+
+<PageTitle>Power Control - Climates</PageTitle>
+<div>
+    <MudChip Label="true" Color="Color.Info" Icon="@Icons.Material.Filled.ElectricMeter">Climates</MudChip>
+</div>
+
+<FlexibleAuthorizeView Permissions="@Permissions.ConfigureClimateDevices">
+    <Authorized>
+        @{
+            UserGotNoRights = false;
+        }
+    </Authorized>
+    <NotAuthorized>
+        @{
+            UserGotNoRights = true;
+        }
+    </NotAuthorized>
+</FlexibleAuthorizeView>
+<MudDataGrid Items="@ClimateDevices">
+<Columns>
+    <PropertyColumn Property="x => x.DeviceId" Title="Device Id" />
+    <PropertyColumn Property="x => x.Name" Title="Name" />
+    <TemplateColumn CellClass="d-flex justify-end">
+        <CellTemplate>
+            <MudStack Row>
+                <MudButton Disabled=@UserGotNoRights StartIcon="@Icons.Material.Filled.Edit" @onclick="() => EditDevice(context.Item)" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Edit</MudButton>
+                <MudButton Disabled=@UserGotNoRights StartIcon="@Icons.Material.Filled.Delete" @onclick="() => DeleteDevice(context.Item)" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Warning">Delete</MudButton>
+            </MudStack>
+        </CellTemplate>
+    </TemplateColumn>
+</Columns>
+</MudDataGrid>

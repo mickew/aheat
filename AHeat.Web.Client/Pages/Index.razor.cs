@@ -1,4 +1,5 @@
 ﻿using AHeat.Web.Client.Services;
+using AHeat.Web.Shared;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using MudBlazor;
@@ -8,6 +9,8 @@ namespace AHeat.Web.Client.Pages;
 public partial class Index : IAsyncDisposable
 {
     [Inject] public IPowerClient powerClient { get; set; } = null!;
+
+    [Inject] public IClimateClient climateClient { get; set; } = null!;
 
     [Inject]
     public ISnackbar Snackbar { get; set; } = null!;
@@ -24,6 +27,20 @@ public partial class Index : IAsyncDisposable
     protected override async Task OnInitializedAsync()
     {
         _hubConnection = new HubConnectionBuilder().WithUrl(Navigation!.ToAbsoluteUri("/statushub")).Build();
+        var climateDeviceInfos = await climateClient.GetClimateDeviceInfosAsync();
+        ClimatDevices.Clear();
+        foreach (var climateDeviceInfo in climateDeviceInfos)
+        {
+            ClimatDevices.Add(new ClimatDevice()
+            {
+                DeviceId = climateDeviceInfo.DeviceId,
+                Name = climateDeviceInfo.Name,
+                Temperature = DoubleToString(climateDeviceInfo.Temperature),
+                Humidity = DoubleToString(climateDeviceInfo.Humidity),
+                Time = climateDeviceInfo.Time.ToLocalTime()
+            }); ;
+        }
+
         var powerDevices = await powerClient.GetPowerDevicesAsync();
         Devices.Clear();
         foreach (var device in powerDevices)
@@ -52,23 +69,40 @@ public partial class Index : IAsyncDisposable
                 StateHasChanged();
             }
         });
-        _hubConnection.On<string, string, string, string>("ClimateUpdate", (id, name, temperature, humidity) =>
+        _hubConnection.On<ClimateDeviceInfo>("ClimateUpdate", (climateDeviceInfo) =>
         {
             Console.WriteLine("ClimateUpdate received");
-            var climateToUpdate = ClimatDevices.FirstOrDefault(d => d.Id == id);
+            var climateToUpdate = ClimatDevices.FirstOrDefault(d => d.DeviceId == climateDeviceInfo.DeviceId);
             if (climateToUpdate == null)
             {
-                ClimatDevices.Add(new ClimatDevice() { Id = id, Name = name, Temperature = temperature, Humidity = humidity });
+                ClimatDevices.Add(new ClimatDevice()
+                {
+                    DeviceId = climateDeviceInfo.DeviceId,
+                    Name = climateDeviceInfo.Name,
+                    Temperature = DoubleToString(climateDeviceInfo.Temperature),
+                    Humidity = DoubleToString(climateDeviceInfo.Humidity),
+                    Time = climateDeviceInfo.Time.ToLocalTime()
+                });
             }
             else
             {
-                climateToUpdate.Temperature = temperature;
-                climateToUpdate.Humidity = humidity;
+                climateToUpdate.Temperature = DoubleToString(climateDeviceInfo.Temperature);
+                climateToUpdate.Humidity = DoubleToString(climateDeviceInfo.Humidity);
+                climateToUpdate.Time = climateDeviceInfo.Time.ToLocalTime();
             }
             StateHasChanged();
         });
         await _hubConnection.StartAsync();
         Console.WriteLine("_hubConnection started");
+    }
+
+    private static string DoubleToString(double? value)
+    {
+        if (value.HasValue)
+        {
+            return value.Value.ToString("0.0");
+        }
+        return "N/A";
     }
 
     private async Task ToggleDevice(int id, bool state)
@@ -108,9 +142,10 @@ public partial class Index : IAsyncDisposable
 
     public class ClimatDevice
     {
-        public string? Id { get; init; }
+        public string? DeviceId { get; init; }
         public string? Name { get; init; }
         public string? Temperature { get; set; }
         public string? Humidity { get; set; }
+        public DateTime Time { get; set; }
     }
 }

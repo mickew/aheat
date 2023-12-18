@@ -22,6 +22,6 @@ GET {{AHeat.Web.API_HostAddress}}/api/relay/webhook/temp
 
 ###
 
-GET {{AHeat.Web.API_HostAddress}}/api/relay/webhook/temp/?hum=60&temp=25.00&id=shellyht-AABBCD&name=Stranden
+GET {{AHeat.Web.API_HostAddress}}/api/relay/webhook/temp?hum=60&temp=25.00&id=shellyht-AABBCD&name=Stranden
 
 ###

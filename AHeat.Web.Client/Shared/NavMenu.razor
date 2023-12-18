@@ -14,5 +14,8 @@
         <FlexibleAuthorizeView Permissions="@(Permissions.ViewPowerDevices | Permissions.ConfigurePowerDevices)">
             <MudNavLink Icon="@Icons.Material.Filled.Devices" Href="admin/devices" Match="NavLinkMatch.Prefix">Devices</MudNavLink>
         </FlexibleAuthorizeView>
+        <FlexibleAuthorizeView Permissions="@(Permissions.ViewClimateDevices | Permissions.ConfigureClimateDevices)">
+            <MudNavLink Icon="@Icons.Material.Filled.ElectricMeter" Href="admin/climates" Match="NavLinkMatch.Prefix">Climates</MudNavLink>
+        </FlexibleAuthorizeView>
     </MudNavGroup>
 </MudNavMenu>
