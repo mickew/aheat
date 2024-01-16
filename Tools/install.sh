@@ -10,15 +10,13 @@ if [ ! $? = 0 ]; then
    exit 1
 else
 
-   mkdir /var/www/powercontrol
-   sudo chmod 666 /var/www/powercontrol
-
-   cp -a . /var/www/powercontrol
-   if [ ! -f /var/www/powercontrol/AHeat.Web.API ]; then
-     whiptail --title "Installation aborted" --msgbox "There was a problem writing the AHeat.Web.API file" 8 78
-    exit
-   fi
    chmod +x /var/www/powercontrol/AHeat.Web.API
+
+   # create database folder
+   mkdir -p /usr/share/powercontrol
+   sudo chmod 777 /usr/share/powercontrol
+
+   /var/www/powercontrol/AHeat.Web.API --seed
 
    cp powercontrolsystem.service /etc/systemd/system
    if [ ! -f /etc/systemd/system/powercontrolsystem.service ]; then

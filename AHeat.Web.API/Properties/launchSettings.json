@@ -42,7 +42,7 @@
     },
     "Run EF Migrations": {
       "commandName": "Project",
-      "commandLineArgs": "/seed"
+      "commandLineArgs": "--seed"
     },
     "IIS Express": {
       "commandName": "IISExpress",

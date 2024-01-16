@@ -13,8 +13,6 @@ else
    systemctl stop rpicasesystem.service
    systemctl disable /etc/systemd/rpicasesystem.service
 
-   rm /usr/local/bin/rpicasesystem/* -r 
-   rm /usr/local/bin/rpicasesystem -d
    rm /etc/systemd/system/rpicasesystem.service
 
    whiptail --title "Uninstall complete" --msgbox "rpicasesystem uninstall complete.\nYou are safe to remove the folder rpicasesystem/latest" 8 78

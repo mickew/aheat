@@ -25,7 +25,7 @@ namespace AHeat.Web.API;
 
 public class Program
 {
-    private const string SeedArgs = "/seed";
+    private const string SeedArgs = "--seed";
 
     public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
       .SetBasePath(Directory.GetCurrentDirectory())
