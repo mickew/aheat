@@ -23,6 +23,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{AC32FD9D-2890-44EE-9850-A5BFCF42DA45}"
 	ProjectSection(SolutionItems) = preProject
 		Tools\default = Tools\default
+		Tools\getlatest.sh = Tools\getlatest.sh
 		Tools\install.sh = Tools\install.sh
 		Tools\powercontrolsystem.service = Tools\powercontrolsystem.service
 		Tools\uninstall.sh = Tools\uninstall.sh

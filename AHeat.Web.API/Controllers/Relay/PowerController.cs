@@ -5,6 +5,7 @@ using AHeat.Application.Services;
 using AHeat.Web.API.Data;
 using AHeat.Web.API.Models;
 using AHeat.Web.Shared;
+using AHeat.Web.Shared.Authorization;
 using AHeat.Web.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,7 @@ public class PowerController : ControllerBase
     // Get: "api/Relay/Power
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<PowerDto>>> GetPowerDevices()
     {
         var powerDevices = await _dbContext.PowerDevices.OrderBy(p => p.Name).ToListAsync();
@@ -50,6 +52,7 @@ public class PowerController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Permissions.ConfigurePowerDevices)]
     public async Task<ActionResult<PowerDto>> GetPowerDevice(int id)
     {
         var powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
@@ -77,6 +80,7 @@ public class PowerController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Authorize(Permissions.ConfigurePowerDevices)]
     public async Task<ActionResult<PowerDto>> PostPowerDevice(PowerDto newPowerDevice)
     {
         var powerDevice = new PowerDevice()
@@ -114,6 +118,7 @@ public class PowerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Permissions.ConfigurePowerDevices)]
     public async Task<IActionResult> PutPowerDevice(int id, PowerDto updatedPowerDevice)
     {
         if (id != updatedPowerDevice.ID)
@@ -144,6 +149,7 @@ public class PowerController : ControllerBase
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Permissions.ConfigurePowerDevices)]
     public async Task<IActionResult> DeletePowerDevice(int id)
     {
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
@@ -163,6 +169,7 @@ public class PowerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Permissions.ViewPowerDevices)]
     public async Task<ActionResult<DeviceChannelState>> GetPowerDeviceSwitch(int id)
     {
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
@@ -190,6 +197,7 @@ public class PowerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Permissions.ViewPowerDevices)]
     public async Task<IActionResult> PutPowerDeviceSwitch(int id, bool onoff)
     {
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
@@ -217,6 +225,7 @@ public class PowerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Permissions.ConfigurePowerDevices)]
     public async Task<ActionResult<IEnumerable<WebHookInfo>>> GetPowerDeviceWebHooks(int id)
     {
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
@@ -244,6 +253,7 @@ public class PowerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Permissions.ConfigurePowerDevices)]
     public async Task<IActionResult> PostPowerDeviceOffWebHook(int id, WebHookInfo webHookInfo)
     {
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
@@ -271,6 +281,7 @@ public class PowerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Permissions.ConfigurePowerDevices)]
     public async Task<IActionResult> PostPowerDeviceOnWebHook(int id, WebHookInfo webHookInfo)
     {
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
@@ -298,6 +309,7 @@ public class PowerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Permissions.ConfigurePowerDevices)]
     public async Task<IActionResult> PutPowerDeviceWebHook(int id, WebHookInfo webHookInfo)
     {
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);
@@ -325,6 +337,7 @@ public class PowerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Permissions.ConfigurePowerDevices)]
     public async Task<IActionResult> DeletePowerDeviceWebHook(int id, int hookid)
     {
         PowerDevice? powerDevice = await _dbContext.PowerDevices.FirstOrDefaultAsync(p => p.ID == id);

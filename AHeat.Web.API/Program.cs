@@ -16,12 +16,16 @@ using AHeat.Web.API.Hubs;
 using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
 using Microsoft.Data.Sqlite;
+using System;
+using System.Configuration;
+using Duende.IdentityServer.EntityFramework.Options;
+using Microsoft.Extensions.Options;
 
 namespace AHeat.Web.API;
 
 public class Program
 {
-    private const string SeedArgs = "/seed";
+    private const string SeedArgs = "--seed";
 
     public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
       .SetBasePath(Directory.GetCurrentDirectory())
@@ -43,6 +47,21 @@ public class Program
         {
             Log.Information("Starting web host");
             var applyDbMigrationWithDataSeedFromProgramArguments = args.Any(x => x == SeedArgs);
+            if (applyDbMigrationWithDataSeedFromProgramArguments)
+            {
+                try
+                {
+                    Log.Information("Migrating and Seeding data");
+                    await SeedData();
+                    Log.Information("Migrating and Seeding data done");
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "An error occurred while migrating or initializing the database.");
+                    return 1;
+                }
+                return 0;
+            }
             WebApplicationBuilder builder = CreateBuilder(args);
             WebApplication app = CreateWebApp(builder);
 
@@ -52,22 +71,6 @@ public class Program
             var addressService = services.GetRequiredService<IApplicationHostAddressService>();
             var ipAddress = addressService.IpAddress;
             Log.Information("Application host address: {ipAddress}", ipAddress);
-
-            try
-            {
-                if (applyDbMigrationWithDataSeedFromProgramArguments)
-                {
-
-                    var initializer = services.GetRequiredService<DbInitializer>();
-
-                    await initializer.RunAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "An error occurred while migrating or initializing the database.");
-            }
-
 
             await app.RunAsync();
         }
@@ -160,6 +163,10 @@ public class Program
                 options.ApiResources.Single().UserClaims.Add("role");
                 options.IdentityResources["openid"].UserClaims.Add("permissions");
                 options.ApiResources.Single().UserClaims.Add("permissions");
+                options.IdentityResources["openid"].UserClaims.Add("firstname");
+                options.ApiResources.Single().UserClaims.Add("firstname");
+                options.IdentityResources["openid"].UserClaims.Add("lastname");
+                options.ApiResources.Single().UserClaims.Add("lastname");
             });
 
         JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("role");
@@ -174,10 +181,21 @@ public class Program
         builder.Services.AddOpenApiDocument(configure =>
         {
             configure.Title = "AHeatWeb";
+
+            //configure.AddSecurity("Bearer", Enumerable.Empty<string>(), new NSwag.OpenApiSecurityScheme
+            //{
+            //    Type = NSwag.OpenApiSecuritySchemeType.OpenIdConnect,
+            //    Flow = NSwag.OpenApiOAuth2Flow.Password,
+            //    AuthorizationUrl = "connect/authorize",
+                
+            //    Scopes = new Dictionary<string, string>
+            //    {
+            //        { "AHeatWebAPI", "AHeatWeb API" }
+            //    }
+            //});
         });
 
         builder.Services.AddSingleton<IApplicationHostAddressService, ApplicationHostAddressService>();
-        builder.Services.AddScoped<DbInitializer>();
 
         builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
         builder.Services.AddSingleton<IAuthorizationPolicyProvider, FlexibleAuthorizationPolicyProvider>();
@@ -209,4 +227,16 @@ public class Program
         });
         return builder;
     }
+
+    private static async Task SeedData()
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+        optionsBuilder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
+        OperationalStoreOptions operationalStoreOptions = new();
+        var options = Options.Create(operationalStoreOptions);
+        
+        await using var dbContext = new ApplicationDbContext(optionsBuilder.Options, options);
+        var initializer = new DbInitializer(dbContext);
+        await initializer.SeedAsync();
+    }   
 }

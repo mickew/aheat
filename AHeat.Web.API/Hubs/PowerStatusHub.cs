@@ -8,8 +8,7 @@ public class PowerStatusHub : Hub
 
     public PowerStatusHub(ILogger<PowerStatusHub> logger)
     {
-        _logger = logger;
-        
+        _logger = logger;        
     }
 
     public override async Task OnConnectedAsync()

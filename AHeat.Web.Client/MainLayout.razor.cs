@@ -25,7 +25,7 @@ public partial class MainLayout : LayoutComponentBase
         }
 
         AspDotnetVersion = currentAssembly.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName!;
-        Version = currentAssembly.GetName().Version!.ToString();
+        Version = $"{currentAssembly.GetName().Version!.Major}.{currentAssembly.GetName().Version!.Minor}.{currentAssembly.GetName().Version!.Revision}";
         await base.OnInitializedAsync();
     }
 

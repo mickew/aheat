@@ -34,6 +34,10 @@ public class ApplicationUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<
 
         identity.AddClaim(
             new Claim(CustomClaimTypes.Permissions, permissionsValue.ToString()));
+        identity.AddClaim(
+            new Claim(CustomClaimTypes.FirstName, user.FirstName));
+        identity.AddClaim(
+            new Claim(CustomClaimTypes.LastName, user.LastName));
 
         return identity;
     }

@@ -1,0 +1,27 @@
+@AHeat.Web.API_HostAddress = https://localhost:7252
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+GET {{AHeat.Web.API_HostAddress}}/identity/account/login
+
+###
+POST {{AHeat.Web.API_HostAddress}}/identity/account/login
+
+{
+    "user": "admin",
+    "password": "Password123!"
+}
+###
+GET {{AHeat.Web.API_HostAddress}}/api/Admin/users
+
+###
+
+GET {{AHeat.Web.API_HostAddress}}/_configuration/AHeat.Web.Client
+
+###
+
+GET {{AHeat.Web.API_HostAddress}}/api/relay/webhook/temp
+
+###
+
+GET {{AHeat.Web.API_HostAddress}}/api/relay/webhook/temp?hum=60&temp=25.00&id=shellyht-AABBCD&name=Stranden
+
+###

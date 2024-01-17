@@ -8,6 +8,7 @@
 <div id="bg"></div>
 
 <form id="account" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-field">
         <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="Email / Username" />
     </div>
@@ -15,10 +16,6 @@
     <div class="form-field">
         <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
     </div>
-
-    <span asp-validation-for="Input.Email" class="text-danger"></span>
-    <br />
-    <span asp-validation-for="Input.Password" class="text-danger"></span>
 
     <div class="form-field">
         <input class="form-check-input" asp-for="Input.RememberMe" />

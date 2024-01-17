@@ -3,6 +3,7 @@ using System;
 using AHeat.Web.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,59 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AHeat.Web.API.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231123103247_AddUserFirstAndLastName")]
+    partial class AddUserFirstAndLastName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.12");
-
-            modelBuilder.Entity("AHeat.Web.API.Models.ClimateDevice", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("DeviceId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("DeviceId")
-                        .IsUnique();
-
-                    b.ToTable("ClimateDevices");
-                });
-
-            modelBuilder.Entity("AHeat.Web.API.Models.ClimateDeviceReading", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ClimateDeviceID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<double?>("Humidity")
-                        .HasColumnType("REAL");
-
-                    b.Property<double?>("Temperature")
-                        .HasColumnType("REAL");
-
-                    b.Property<DateTime>("Time")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("ClimateDeviceID");
-
-                    b.ToTable("ClimateDeviceReadings");
-                });
 
             modelBuilder.Entity("AHeat.Web.API.Models.PowerDevice", b =>
                 {
@@ -453,17 +409,6 @@ namespace AHeat.Web.API.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("AHeat.Web.API.Models.ClimateDeviceReading", b =>
-                {
-                    b.HasOne("AHeat.Web.API.Models.ClimateDevice", "ClimateDevice")
-                        .WithMany("Readings")
-                        .HasForeignKey("ClimateDeviceID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ClimateDevice");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("AHeat.Web.API.Models.Role", null)
@@ -513,11 +458,6 @@ namespace AHeat.Web.API.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("AHeat.Web.API.Models.ClimateDevice", b =>
-                {
-                    b.Navigation("Readings");
                 });
 #pragma warning restore 612, 618
         }

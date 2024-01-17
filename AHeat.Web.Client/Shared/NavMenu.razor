@@ -1,6 +1,7 @@
 ﻿<MudNavMenu>
     <MudNavLink Href="/" Icon="@Icons.Material.Filled.Dashboard" Match="NavLinkMatch.All">Dashboard</MudNavLink>
     <MudNavGroup Icon="@Icons.Material.Filled.AdminPanelSettings" Title="Settings" Expanded="true">
+        <MudNavLink Icon="@Icons.Material.Filled.Security" OnClick="ChangePassword">Change password</MudNavLink>
         <FlexibleAuthorizeView Permissions="@(Permissions.ViewUsers | Permissions.ManageUsers)">
             <MudNavLink Icon="@Icons.Material.Filled.People" Href="/admin/users" Match="NavLinkMatch.Prefix">Users</MudNavLink>
         </FlexibleAuthorizeView>
@@ -13,6 +14,8 @@
         <FlexibleAuthorizeView Permissions="@(Permissions.ViewPowerDevices | Permissions.ConfigurePowerDevices)">
             <MudNavLink Icon="@Icons.Material.Filled.Devices" Href="admin/devices" Match="NavLinkMatch.Prefix">Devices</MudNavLink>
         </FlexibleAuthorizeView>
+        <FlexibleAuthorizeView Permissions="@(Permissions.ViewClimateDevices | Permissions.ConfigureClimateDevices)">
+            <MudNavLink Icon="@Icons.Material.Filled.ElectricMeter" Href="admin/climates" Match="NavLinkMatch.Prefix">Climates</MudNavLink>
+        </FlexibleAuthorizeView>
     </MudNavGroup>
-    <MudNavLink Icon="@Icons.Material.Filled.QuestionMark" Href="/about" Match="NavLinkMatch.Prefix">About</MudNavLink>
 </MudNavMenu>

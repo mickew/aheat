@@ -15,6 +15,8 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<User, Role>
     }
 
     public DbSet<PowerDevice> PowerDevices { get; set; }
+    public DbSet<ClimateDevice> ClimateDevices { get; set; }
+    public DbSet<ClimateDeviceReading> ClimateDeviceReadings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
